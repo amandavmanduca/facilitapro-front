@@ -75,7 +75,7 @@ export default function Logon() {
 
 
     return (
-        <div>
+        <div className="logon-full">
             <Header /> 
             <div className="logon-container">
                 

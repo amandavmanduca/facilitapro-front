@@ -1,6 +1,4 @@
 import React from 'react';
-import logoImg from './assets/logo.PNG';
-import { FiPower } from 'react-icons/fi';
 import { useHistory } from 'react-router-dom';
 
 

@@ -5,6 +5,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import MaskedInput from 'react-text-mask';
 import api from '../../services/api';
+import Header from '../../Header';
 
 
 export default function NewClient() {
@@ -109,62 +110,67 @@ export default function NewClient() {
 
 
     return (
-        <div className="new-client-container">
-            <div className="content">
+        <div>
+            <Header />
+        
+            <div className="new-client-container">
+                
+                <div className="content">
 
-                <section>
-                    <img src={logoImg} alt="FacilitaPRO" />
-                    
-                    <h1>Profissionais Verificados</h1>
-                    <p>Rápido, Fácil e Confiável.</p>
-                    <p>Atendendo em toda a cidade de Pelotas.</p>
-                    <Link className="back-link" to='/'>
-                        <FiArrowLeft size={16} color="E02041" />
-                        Voltar para Home
-                    </Link>
-                    <Link className="back-link" to='/main'>
-                        <FiArrowLeft size={16} color="E02041" />
-                        Ir para Meus Pedidos
-                    </Link>
+                    <section>
+                        <img src={logoImg} alt="FacilitaPRO" />
+                        
+                        <h1>Profissionais Verificados</h1>
+                        <p>Rápido, Fácil e Confiável.</p>
+                        <p>Atendendo em toda a cidade de Pelotas.</p>
+                        <Link className="back-link" to='/'>
+                            <FiArrowLeft size={16} color="E02041" />
+                            Voltar para Home
+                        </Link>
+                        <Link className="back-link" to='/main'>
+                            <FiArrowLeft size={16} color="E02041" />
+                            Ir para Meus Pedidos
+                        </Link>
 
-                </section>
+                    </section>
 
-                <form onSubmit={handleRegister}>
-                    <button className="buttonFk" style={{ marginTop: 0 }}type="submit">Cadastro de Endereços</button>
+                    <form onSubmit={handleRegister}>
+                        <button className="buttonFk" style={{ marginTop: 0 }}type="submit">Cadastro de Endereços</button>
 
-                    <button className="buttonFk2" type="submit">Endereços Cadastrados no FacilitaPRO</button>
-                    <select type="number" name={address}>
-                        {address.map(adr =>
-                        <option key={adr.id} 
-                        //placeholder="Serviço a ser Realizado"
-                        value={adr.id}>{adr.street} [ nº {adr.number} {adr.complement} ]</option>
-                        )}
-                    </select>
+                        <button className="buttonFk2" type="submit">Endereços Cadastrados no FacilitaPRO</button>
+                        <select type="number" name={address}>
+                            {address.map(adr =>
+                            <option key={adr.id} 
+                            //placeholder="Serviço a ser Realizado"
+                            value={adr.id}>{adr.street} [ nº {adr.number} {adr.complement} ]</option>
+                            )}
+                        </select>
 
-                    <button className="buttonFk2" type="submit">Cadastre um Novo Endereço</button>
-                    <input type="text" placeholder="Avenida/Rua" value={street} onChange={e => setStreet(e.target.value)} />
-                    <div>
-                        <input type="number" style={{ width: "20%" }} placeholder="Nº" value={number} onChange={e => setNumber(e.target.value)} />
-                        <input type="text" style={{ width: "80%" }} placeholder="Complemento" value={complement} onChange={e => setComplement(e.target.value)} />
-                    </div>
-                    <div>
-                        <input type="text" placeholder="Bairro" value={neighborhood} onChange={e => setNeighborhood(e.target.value)} />
-                        <MaskedInput type="text" style={{ width: "100%" }} placeholder="CEP" value={zipcode} onChange={e => setZipcode(e.target.value)}
-                        mask={[/[0-9]/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/]} />
-                    </div>
-
-
-                    <button className="button" type="submit">Cadastrar Endereço</button>
-
-                    {(address.length > 0) ?
-
-                    <span>
-                        <button className="buttonFk3" onClick={() => history.push('/pedido')}>Solicitar Orçamento</button>     
-                    </span> : null}
-                                
-                </form>
+                        <button className="buttonFk2" type="submit">Cadastre um Novo Endereço</button>
+                        <input type="text" placeholder="Avenida/Rua" value={street} onChange={e => setStreet(e.target.value)} />
+                        <div>
+                            <input type="number" style={{ width: "20%" }} placeholder="Nº" value={number} onChange={e => setNumber(e.target.value)} />
+                            <input type="text" style={{ width: "80%" }} placeholder="Complemento" value={complement} onChange={e => setComplement(e.target.value)} />
+                        </div>
+                        <div>
+                            <input type="text" placeholder="Bairro" value={neighborhood} onChange={e => setNeighborhood(e.target.value)} />
+                            <MaskedInput type="text" style={{ width: "100%" }} placeholder="CEP" value={zipcode} onChange={e => setZipcode(e.target.value)}
+                            mask={[/[0-9]/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/]} />
+                        </div>
 
 
+                        <button className="button" type="submit">Cadastrar Endereço</button>
+
+                        {(address.length > 0) ?
+
+                        <span>
+                            <button className="buttonFk3" onClick={() => history.push('/pedido')}>Solicitar Orçamento</button>     
+                        </span> : null}
+                                    
+                    </form>
+
+
+                </div>
             </div>
         </div>
     );
