@@ -16,7 +16,7 @@ export default function Footer() {
             </footer>
             <div className="text-footer">
                 <p>Desenvolvedores</p>
-                <p>Amanda Manduca | Grégory | Kauê | Maxwell Laner</p>
+                <p>Amanda Manduca | Maxwell Laner</p>
                 <br />
                 
             </div>
