@@ -1,0 +1,64 @@
+.new-professional-container {
+    width: 100%;
+    max-width: 1120px;
+    
+    margin: auto;
+    margin-top: 30px;
+    display: flex;
+    align-items: top;
+    justify-content: center;
+}
+
+.new-professional-container .content {
+    width: 100%;
+    padding: 70px;
+    background: #f0f0f5;
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: top;
+    margin-top: 10px;
+}
+
+.new-professional-container .content section {
+    width: 100%;
+    max-width: 330px;
+}
+
+.new-professional-container .content section h1 {
+    margin: 64px 0 32px;
+    font-size: 29px;
+}
+
+.new-professional-container .content section p {
+    font-size: 18px;
+    color: #767680;
+    line-height: 32px;
+}
+
+.new-professional-container .content select {
+    font-size: 18px;
+    color: #767680;
+    line-height: 32px;
+}
+
+.new-professional-container .content form {
+    width: 100%;
+    max-width: 550px;
+}
+
+.new-professional-container .content form p {
+    margin-top: 8px;
+}
+
+.new-professional-container .content form input,
+.new-professional-container .content form textarea,
+.new-professional-container .content form select {
+    margin-top: 8px;
+}
+
+.register-container .content form .input-group input + input {
+    margin-left: 8px;
+}

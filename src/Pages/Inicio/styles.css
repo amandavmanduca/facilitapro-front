@@ -1,0 +1,97 @@
+.home-container body {
+    height: 100%;
+    width: 90% center;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;   
+
+}
+
+.home-container .content body .button {
+    max-width: 300px;
+    background-color: rgb(255, 238, 0);
+    align-content: center;
+    color: rgb(73, 68, 68);
+    
+}
+
+.home-container .content body main {
+    display: block;
+    margin: 15px;
+    background-color: #0000004d;
+    padding: 15px 30px;
+    margin-top: 20px;
+    border-radius: 15px;
+    margin: 120px;
+}
+
+
+.home-container .content section {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    background-color: white;
+    margin: 10px;
+    font-size: 30px;
+}
+
+.home-container .content section section {
+    display: block;
+    margin: 15px;
+    padding: 15px 30px;
+    margin-top: 20px;
+    border-radius: 15px;
+    
+}
+
+.home-container .content body div {
+    margin: 15px;
+    padding: 15px 30px;
+    margin-top: 20px;
+    border-radius: 15px;
+    
+}
+
+.home-container .content body main div {
+    display: block;
+    margin: 5px;
+}
+
+
+
+.home-container .content body main h1, h2, p {
+    color: white;
+    text-align: center;
+}
+
+.home-container .content body section {
+
+    padding: 15px 30px;
+    margin-top: 20px;
+    border-radius: 15px;
+}
+
+
+
+.home-container .content footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 150px;
+    
+}
+
+.home-container .content body title {
+    display: block;
+    margin: 90px;
+    margin-top: 40px;
+    border-radius: 35px;
+}
+
+.home-container .content body title h2 {
+    font-size: 20px;
+    color: gray;
+    text-align: start;
+    
+}
