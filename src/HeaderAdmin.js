@@ -28,7 +28,6 @@ export default function Header() {
                     </div>
                     <ul class="nav navbar-nav">
                         <li><a class="navbar-brand" href="/">Início</a></li>
-                        <li class="active"><a href="/adminlogin">Admin Login</a></li>
                         <li><a href="/pedidosadmin">Pedidos</a></li>
                         <li><a href="/listagemprofissional">Profissionais</a></li>
                         <li><a href="/listagemclientes">Clientes</a></li>

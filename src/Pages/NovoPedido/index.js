@@ -150,7 +150,6 @@ export default function NewIncident() {
                     
                     <div className="buttonFk2" type="submit">Período que Necessita o Orçamento</div>
                     
-                    <p>Data</p>
                     
                     <div>
                         <input type="date" style={{ width: "50%" }} value={initialDate} onChange={e => setInitialDate(e.target.value)} />

@@ -1,6 +1,14 @@
+html, body {
+    height: 100%;
+    display:table;
+	width:100%;
+}
+
+
 .new-professional-container {
     width: 100%;
     max-width: 1250px;
+    min-width: 1250px;
     
     margin: auto;
     margin-top: 30px;

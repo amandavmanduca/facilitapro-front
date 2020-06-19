@@ -1,6 +1,14 @@
+html, body {
+    height: 100%;
+    display:table;
+	width:100%;
+}
+
+
 .detalhesprof-container {
     width: 100%;
     max-width: 1120px;
+    min-width: 1120px;
     height: 100vh;
     margin: 0 auto;
 

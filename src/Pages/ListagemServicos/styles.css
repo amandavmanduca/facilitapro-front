@@ -1,6 +1,14 @@
+html, body {
+    height: 100%;
+    display:table;
+	width:100%;
+}
+
+
 .profile-container {
     width: 100%;
     max-width: 1180px;
+    min-width: 1180px;
     padding: 0 30px;
     margin: 32px auto;
     margin-top: 32px;
@@ -154,6 +162,8 @@
     text-decoration: none;
     text-decoration: underline;
 }
+
+
 
 .profile-container ul li p span h3 li button:last-child:hover{
 
