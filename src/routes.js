@@ -4,7 +4,6 @@ import Login from './Pages/Login';
 import LoginAdmin from './Pages/LoginAdmin';
 import NovoPedido from './Pages/NovoPedido';
 import AdminPedidos from './Pages/AdminPedidos';
-import TesteNovoPedido from './Pages/TesteNovoPedido';
 import NovoCliente from './Pages/CadastroCli';
 import CadastroAdmin from './Pages/CadastroAdmin';
 import NovoProfissional from './Pages/CadastroProfissional';
@@ -60,7 +59,6 @@ export default function Routes() {
                 <Route path="/adminlogin" exact component={LoginAdmin} />
                 <Route path="/" exact component={Home} />
                 <PrivateRoute path="/pedido" exact component={NovoPedido} />
-                <PrivateRoute path="/testepedido" exact component={TesteNovoPedido} />
                 <Route path="/register" exact component={NovoCliente} />
                 <PrivateRouteAdmin path="/cadastroprofissional" exact component={NovoProfissional} />
                 <PrivateRouteAdmin path="/cadastroservicos" exact component={NovaProfissao} />

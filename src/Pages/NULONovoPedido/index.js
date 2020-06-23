@@ -9,9 +9,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Header from '../../Header';
-import Dropzone from '../../components/Dropzone';
-import { grey } from '@material-ui/core/colors';
-import { useDropzone } from 'react-dropzone';
 
 export default function NewIncident() {
 
@@ -29,7 +26,6 @@ export default function NewIncident() {
     const[address, setAddress] = useState([]);
     const history = useHistory([]);
     //const cliNome = localStorage.getItem('cliNome');
-    const[selectedFile, setSelectedFile] = useState();
     
     
     useEffect(() => {
@@ -61,38 +57,38 @@ export default function NewIncident() {
         })
     }, [service]);
 
-    console.log(selectedFile);
+    
 
 
 
     async function handlePedido(e) {
         e.preventDefault();
 
-
-        const data = new FormData();
-
-        data.append('client_id', client_id);
-        data.append('service_id', service_id);
-        data.append('address_id', address_id);
-        data.append('description', description);
-        data.append('initialDate', initialDate);
-        data.append('finallyDate', finallyDate);
-        data.append('status', status);
-
-        if(selectedFile) {
-            data.append('image', selectedFile);
+        const data = {
+            client_id,
+            service_id,
+            address_id,
+            description,
+            initialDate,
+            finallyDate,
+            status,
         }
+
+        console.log(service_id);
+
+        console.log(data);
+        console.log(token);
+
 
         if (service_id !== undefined && description !== undefined & initialDate !== undefined & finallyDate !== undefined & address_id !== undefined) {
 
-
             try {
-                //await api.post(`/solicitations`, data, {
-                //    headers: {
-                //        'Authorization': `Bearer ` + token
-                //        }
-                //    }
-                //);
+                await api.post(`/solicitations`, data, {
+                    headers: {
+                        'Authorization': `Bearer ` + token
+                        }
+                    }
+                );
                 
                 console.log(data);
 
@@ -113,13 +109,6 @@ export default function NewIncident() {
         }
     }
 
-    function handleDeletePhoto() {
-        history.push('/testepedido');
-        //Dropzone({ onFileUploaded: undefined});
-    }
-
-
-
     return (
         <div className="new-incident-container">
             <Header />
@@ -139,9 +128,8 @@ export default function NewIncident() {
                         Cadastrar Novo Endereço
                     </Link>
                 </section>
-                <form>
-                    
-                    <div className="buttonFk" style={{ marginTop: 0 }}>Realize seu Pedido</div>
+                <form onSubmit={handlePedido}>
+                    <div className="buttonFk" style={{ marginTop: 0 }} type="submit">Realize seu Pedido</div>
                     
                     <FormControl style={{ marginTop: 10 }} variant="outlined" className="formControl">
                         <InputLabel htmlFor="outlined-age-native-simple">Serviço a ser Realizado</InputLabel>
@@ -157,22 +145,17 @@ export default function NewIncident() {
                         </Select>
                     </FormControl>
 
-                    <div className="buttonFk2">Descrição</div>
+                    <div className="buttonFk2" type="submit">Descrição</div>
                     <textarea placeholder="Descrição detalhada do serviço." value={description} onChange={e => setDescription(e.target.value)} />
                     
-                    <Dropzone onFileUploaded={setSelectedFile} />
-                    <button style={{float: "right", backgroundColor: grey,
-                        borderRadius: 4, fontFamily: "roboto", fontSize: 14,
-                        padding: 1, marginTop: 3}} onClick={handleDeletePhoto}>Remover Foto</button>
-                    <div className="buttonFk2">Período que Necessita o Orçamento</div>
+                    <div className="buttonFk2" type="submit">Período que Necessita o Orçamento</div>
                     
-                    <p>Data</p>
                     
                     <div>
                         <input type="date" style={{ width: "50%" }} value={initialDate} onChange={e => setInitialDate(e.target.value)} />
                         <input type="date" style={{ width: "50%" }} value={finallyDate} onChange={e => setFinallyDate(e.target.value)} />
                     </div>
-                    <div className="buttonFk2">Local do Serviço</div>
+                    <div className="buttonFk2" type="submit">Local do Serviço</div>
                     
                     <FormControl style={{ marginTop: 10 }} variant="outlined" className="formControl">
                         <InputLabel htmlFor="outlined-age-native-simple">Endereço</InputLabel>
@@ -189,7 +172,7 @@ export default function NewIncident() {
                         </Select>
                     </FormControl>
                                        
-                    <button className="button" type="submit" onClick={handlePedido}>Solicitar Orçamento</button>
+                    <button className="button" type="submit">Solicitar Orçamento</button>
                 </form>
             </div>
         </div>

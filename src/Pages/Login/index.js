@@ -6,6 +6,7 @@ import { FiLogIn } from 'react-icons/fi';
 import api from '../../services/api';
 import PasswordMask from 'react-password-mask';
 import Header from '../../Header';
+import { FiSearch } from 'react-icons/fi';
 
 export default function Logon() {
 
@@ -19,14 +20,8 @@ export default function Logon() {
         e.preventDefault();
 
 
-        const dados = {
-            email,
-            password,
-        }
 
         try {
-
-            
 
             const response = await api.get('/login', {
                 // Axios looks for the `auth` option, and, if it is set, formats a
@@ -36,38 +31,46 @@ export default function Logon() {
                   password: password
                 }
             });
-
-            /**
-             * client:
-                birth: null
-                cpf: "222.222.222-22"
-                createdAt: "2020-05-06T16:58:09.000Z"
-                deletedAt: null
-                email: "jose@gmail.com"
-                id: "e05d1d88-abe7-4c43-878f-9cd244537ff7"
-                name: "jose da silva"
-                passwordHash: "$2a$08$REgT76KZWyBxCnPzZMCTi.7SRFAZUDEA2GCMGLHqVs7pgEahf0QhC"
-                phone: "(22) 22222-2222"
-                slug: "jose-da-silva"
-                updatedAt: "2020-05-06T16:58:09.000Z"
-                __proto__: Object
-                token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImUwNWQxZDg4LWFiZTctNGM0My04NzhmLTljZDI0NDUzN2ZmNyIsImlhdCI6MTU4ODc4NDkzM30.PYmB_5Vp8YfkS-xC7jxYxTmdBanCBf20sVVJbXWQZjo"
-             */
-            
-            console.log(response.data);        
+      
             
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('cliNome', response.data.client.name);
             localStorage.setItem('client_id', response.data.client.id);
 
-
-            console.log(dados);
             
             alert('Login Realizado com Sucesso.')
             history.push('/main');
 
         } catch (err) {
             alert('Dados Incorretos.')
+        }
+    }
+
+    async function handlePassword() {
+
+
+        if (email === '') {
+            alert('Preencher o email corretamente.')
+            return
+        }
+        if(email.indexOf('@') === -1) {
+            alert('Inserir um email válido');
+            setEmail('');
+            return
+        }
+
+        const enviaemail = {
+            email
+        }
+
+        try {
+            
+            await api.post('/recover', enviaemail)
+
+            alert('Sua nova senha foi enviada por e-mail.')
+
+        } catch {
+            alert('Não foi possível recuperar a senha para seu e-mail.')
         }
     }
 
@@ -88,27 +91,45 @@ export default function Logon() {
                         <p>Atendendo em toda a cidade de Pelotas.</p>
 
                     </section>
-                    <form onSubmit={handleLogin}>
-                        <h1>Faça seu Login</h1>
+                    <form>
+                        <form onSubmit={handleLogin}>
+                            <h1>Faça seu Login</h1>
 
-                        <input
-                            placeholder="E-mail" value={email} onChange={e => setEmail(e.target.value)}
-                        />
-                        <PasswordMask
-                            value={password}
-                            placeholder="Senha"
-                            onChange={e => setPassword(e.target.value)}
-                        />
+                            <input
+                                placeholder="E-mail" value={email} onChange={e => setEmail(e.target.value)}
+                            />
+                            <PasswordMask
+                                value={password}
+                                placeholder="Senha"
+                                onChange={e => setPassword(e.target.value)}
+                            />
 
-                        <button className="button" type="submit">Entrar</button>
+                            <button className="button" type="submit">Entrar</button>
 
-                        <Link className="back-link" to='/register'>
-                            <FiLogIn size={16} color="E02041" style={{ marginRight: "3px" }} />
-                            Não tenho cadastro
-                        </Link>
+                            <Link className="back-link" to='/register'>
+                                <FiLogIn size={16} color="E02041" style={{ marginRight: "3px" }} />
+                                Não tenho cadastro
+                            </Link>
+
+                            
+                        </form>
+
+                        <span>
+                            <button style={{border: "none", marginTop: 8, fontWeight: 500, fontStyle: "roboto", color: "#41414d"}}
+                                onClick={ () => { if (window.confirm('Você deseja recuperar a senha do seu email?')) handlePassword()} }
+                                type="submit">
+                                <FiSearch size={16} color="E02041" style={{ marginRight: "3px" }} />
+                                Recuperar Senha
+                            </button>
+                        </span>
                     </form>
+
+
+                    
                 </div>
             </div>
+
+
         </div>
         
     );

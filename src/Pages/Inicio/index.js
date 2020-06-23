@@ -24,14 +24,7 @@ export default function Home() {
     const history = useHistory();
     const token = localStorage.getItem('token');
     
-    function handleLogout() {
-                     
-        localStorage.clear();
-        history.push('/');
-    }
-    function handleMain() {
-        history.push('/main');
-    }
+
 
 
 

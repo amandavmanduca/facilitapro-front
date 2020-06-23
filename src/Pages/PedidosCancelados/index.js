@@ -35,6 +35,7 @@ export default function ProfileAndamento() {
     const [solicitation, setSolicitation] = useState([]);
     const [budget, setBudget] = useState([]);
     const [professional, setProfessional] = useState([]);
+    const [service, setService] = useState([]);
     
     const cliNome = localStorage.getItem('cliNome');
     const history = useHistory();
@@ -126,6 +127,17 @@ export default function ProfileAndamento() {
             })
             .then(response => {
                 setProfessional(response.data)
+        })
+    }, );
+
+    useEffect(() => {
+        api.get(`/services`, {
+            headers: {
+                'Authorization': `Bearer ` + token
+                }
+            })
+            .then(response => {
+                setService(response.data)
         })
     }, );
 
@@ -377,11 +389,18 @@ export default function ProfileAndamento() {
                  
                     <ul>
                         {solicitation.filter(solicitation => solicitation.client_id === cliId)
+                        .sort(({ id: previousID }, { id: currentID }) => -previousID + currentID)
                         .filter(solicitation => solicitation.status === "cancelado")
                         .map(solicitation => (
                             <li key={solicitation.id}>
                                 <strong>Pedido #{solicitation.id}</strong>
-                                <strong>Serviço: {solicitation.services.name}</strong>
+                                <strong>Serviço: {service.filter(service => service.id === solicitation.service_id).map(service => (
+                                    <span key={service.id}>
+                                        <h3>{service.name}</h3>
+                                    </span>
+                                ))}
+                                </strong>
+                                <img style={{maxWidth: 200}} src={solicitation.photoUrl} alt="Foto"/>
                                 <p>Período Para Orçamentos: {handleData(solicitation.initialDate)} à {handleData(solicitation.finallyDate)}</p>
                                 <strong>DESCRIÇÃO:</strong>
                                 <h3>{solicitation.description}</h3>

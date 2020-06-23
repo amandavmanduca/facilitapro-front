@@ -1,7 +1,7 @@
 import React, {useCallback, useState } from 'react'
 import {useDropzone} from 'react-dropzone'
 import './style.css';
-import { FiUpload } from 'react-icons/fi';
+import { FiUpload, FiWind } from 'react-icons/fi';
 import { useEffect } from 'react';
 
 
@@ -35,10 +35,10 @@ const Dropzone = ({ onFileUploaded }) => {
         
         { selectedFileUrl ? 
         
-          <img src={selectedFileUrl} alt="Point thumbnail" style={{maxWidth: 150, maxHeight: 150}} />
+          <img src={selectedFileUrl} alt="Point thumbnail" style={{maxWidth: 150 ,maxHeight: 150}} />
 
         : (
-            <p><FiUpload /> Insira uma Imagem do Local do Serviço <br /> (Opcional)</p>
+            <p><FiUpload /> Insira uma Foto Estilo 3X4 <br /> (Opcional)</p>
         )
         }
         

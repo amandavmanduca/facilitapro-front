@@ -1,13 +1,6 @@
-html, body {
-    height: 100%;
-    display:table;
-	width:100%;
-}
-
 .new-incident-container {
     width: 100%;
     max-width: 1400px;
-    min-width: 1400px;
     height: 100vh;
     margin: auto;
     

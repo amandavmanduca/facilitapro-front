@@ -29,32 +29,22 @@ export default function Servicos() {
     const [budget, setBudget] = useState([]);
     const [professional, setProfessional] = useState([]);
     const [professions, setProfessions] = useState([]);
-    const [statusBusca, setStatusBusca] = useState('aberto');
+    const [services, setServices] = useState([]);
+
     
     
     const history = useHistory();
 
 
 
-    const [visible, setVisible] = useState();
-    const [visibleFin, setVisibleFin] = useState();
+
     localStorage.removeItem('professionalId');
 
     const[statusS, setStatusS] = useState();
     localStorage.setItem('statusS', statusS);
     
 
-    const[statusB, setStatusB] = useState('');
 
-    const[notaFP, setNotaFP] = useState();
-    const[notaProf, setNotaProf] = useState();
-    const[hover, setHover] = React.useState(-1);
-
-    const[filtraId, setFiltraId] = useState();
-
-    const[idProfAv, setIdProfAv] = useState();
-    const[value, setValue] = useState();
-    const[client_id, setClient_id] = useState();
 
 
 
@@ -66,8 +56,8 @@ export default function Servicos() {
     useEffect(() => {
         api.get(`/solicitations`, {
             headers: {
-                //'Authorization': `Bearer ` + token
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
+                'Authorization': `Bearer ` + token
+                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
@@ -78,8 +68,8 @@ export default function Servicos() {
     useEffect(() => {
         api.get(`/budgets`, {
             headers: {
-                //'Authorization': `Bearer ` + token
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
+                'Authorization': `Bearer ` + token
+                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
@@ -90,14 +80,14 @@ export default function Servicos() {
     useEffect(() => {
         api.get(`/professionals`, {
             headers: {
-                //'Authorization': `Bearer ` + token
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
+                'Authorization': `Bearer ` + token
+                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
                 setProfessional(response.data)
         })
-    },[professional] );
+    });
 
     useEffect(() => {
         api.get(`/professions`, {
@@ -107,6 +97,17 @@ export default function Servicos() {
             })
             .then(response => {
                 setProfessions(response.data)
+        })
+    }, );
+
+    useEffect(() => {
+        api.get(`/services`, {
+            headers: {
+                'Authorization': `Bearer ` + token
+                }
+            })
+            .then(response => {
+                setServices(response.data)
         })
     }, );
 
@@ -234,19 +235,20 @@ export default function Servicos() {
                             <br />
                             
                             <div style={{marginTop: 5}}>
-                                <h3>{profession.services.map(services => (
-                                    <span  style={{height: 50}}>
-                                        <strong>#{services.id} </strong>
-                                        <strong>{services.name}   </strong>
-                                        <button style={{ border: "none", backgroundColor: "transparent" }} title="Deletar Serviço" onClick={ () => { if (window.confirm('Você deseja excluir o serviço ' + services.name + ' ?')) handleExcluirServico(services.id)} }>
-                                            <FiTrash2 size={18} />  
-                                        </button>
-                                        <p style={{fontWeight: "normal", color: "black"}}> [Pedidos: {solicitation.filter(solicitations => solicitations.service_id === services.id).length}]</p>
-                                        <p style={{fontWeight: "normal", color: "black"}}> [Finalizados: {solicitation.filter(solicitations => solicitations.service_id === services.id)
-                                                    .filter(solicitations => solicitations.status === 'finalizado').length}]</p>
-                                        <br />
-                                    </span>
-                                    
+                                <h3>{services
+                                    .filter(services => services.profession_id === profession.id)
+                                    .map(services => (
+                                        <span style={{height: 50}}>
+                                            <strong>#{services.id} </strong>
+                                            <strong>{services.name}   </strong>
+                                            <button style={{ border: "none", backgroundColor: "transparent" }} title="Deletar Serviço" onClick={ () => { if (window.confirm('Você deseja excluir o serviço ' + services.name + ' ?')) handleExcluirServico(services.id)} }>
+                                                <FiTrash2 size={18} />  
+                                            </button>
+                                            <p style={{fontWeight: "normal", color: "black"}}> [Pedidos: {solicitation.filter(solicitations => solicitations.service_id === services.id).length}]</p>
+                                            <p style={{fontWeight: "normal", color: "black"}}> [Finalizados: {solicitation.filter(solicitations => solicitations.service_id === services.id)
+                                                        .filter(solicitations => solicitations.status === 'finalizado').length}]</p>
+                                            <br />
+                                        </span>
                                 ))}</h3>
                             </div>
                             </td>

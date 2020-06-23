@@ -7,7 +7,7 @@ import MaskedInput from 'react-text-mask';
 import api from '../../services/api';
 import PasswordMask from 'react-password-mask';
 import HeaderAdmin from '../../HeaderAdmin';
-import Dropzone from '../../components/DropzoneProf';
+
 
 
 export default function NewProfessional() {
@@ -22,25 +22,7 @@ export default function NewProfessional() {
     const[password, setPassword] = useState('');
     const[phone, setPhone] = useState('');
     const[profession_id, setProfession_id] = useState('');
-    const[description, setDescription] = useState('');
     const[professions, setprofessions] = useState([]);
-    const[selectedFile, setSelectedFile] = useState();
-    const[formData, setFormData] = useState({
-        profession_id: profession_id,
-        name: name,
-        birth: birth,
-        cpf: cpf,
-        phone: phone,
-        email: email,
-        password: password,
-        description: description
-    });
-
-    function handleInputChange(event) {
-        const { name, value } = event.target;
-        setFormData({...formData, [name]: value })
-    }
-
 
             
     useEffect(() => {
@@ -58,22 +40,15 @@ export default function NewProfessional() {
     async function handleRegister(e) {
         e.preventDefault();
 
-        const { profession_id, name, birth, cpf, phone, email, password, description } = formData;
-
-
-        const data = new FormData();
-
-        data.append('profession_id', profession_id);
-        data.append('name', name);
-        data.append('birth', birth);
-        data.append('cpf', cpf);
-        data.append('phone', phone);
-        data.append('email', email);
-        data.append('password', password);
-        data.append('description', description);
-
-        if(selectedFile) {
-            data.append('file', selectedFile);
+        const dados = {
+            profession_id,
+            name,
+            birth,
+            cpf,
+            phone,
+            email,
+            password
+            //description
         }
 
 
@@ -107,12 +82,13 @@ export default function NewProfessional() {
         if (name !== '' & cpf !== '' & birth !== '' & email !== '' & phone !== '' & password !== '' & profession_id !== '0') {
         
             try {
-
-                const config = {     
-                    headers: { 'Authorization': `Bearer ` + token, 'content-type': 'multipart/form-data' }
-                }
             
-                await api.post('/professionals', data , config);
+                await api.post('/professionals', dados , {
+                    headers: {
+                        'Authorization': `Bearer ` + token
+                        }
+                    }
+                );
                 
                 alert('Cadastro Realizado com Sucesso.');
 
@@ -137,10 +113,11 @@ export default function NewProfessional() {
         
             <div className="new-professional-container">
                 <div className="content">
+
                     <form onSubmit={handleRegister}>
                         <button className="buttonFk" style={{ marginTop: 0 }}type="submit">Cadastro de Profissional Verificado</button>
                         <button className="buttonFk2" type="submit">Profissão</button>
-                        <select type="number" name="profession_id" onChange={handleInputChange}>
+                        <select type="number" name={profession_id} onChange={e => setProfession_id(e.target.value)}>
                             <option value="0">Selecionar Profissão</option>
                             {professions.map(profession =>
                             <option key={profession.id} 
@@ -150,30 +127,21 @@ export default function NewProfessional() {
                         </select>                      
 
                         <button className="buttonFk2" type="submit">Dados Pessoais</button>
-
-                        <Dropzone onFileUploaded={setSelectedFile} />
-
-
-                        <input placeholder="Nome Completo" name="name" onChange={handleInputChange} />
-                        <MaskedInput style={{ width: "60%" }} placeholder="CPF" name="cpf" onChange={handleInputChange}
+                        <input placeholder="Nome Completo" value={name} onChange={e => setName(e.target.value)} />
+                        <MaskedInput style={{ width: "60%" }} placeholder="CPF" value={cpf} onChange={e => setCpf(e.target.value)}
                             mask={[ /[0-9]/, /\d/, /\d/,'.', /\d/, /\d/, /\d/, '.',  /\d/, /\d/, /\d/, '-',  /\d/, /\d/]} />
-                        <MaskedInput style={{ width: "40%" }} placeholder="Data de Nasc." name="birth" onChange={handleInputChange}
+                        <MaskedInput style={{ width: "40%" }} placeholder="Data de Nasc." value={birth} onChange={e => setBirth(e.target.value)}
                             mask={[ /[0-9]/, /[0-9]/, '/', /[0-9]/, /[0-9]/, '/',  /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/]} />
-                        <input placeholder="Email" name="email" onChange={handleInputChange} />
+                        <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
                         <PasswordMask
-                            name="password"
+                            value={password}
                             placeholder="Senha"
-                            onChange={handleInputChange}
+                            onChange={e => setPassword(e.target.value)}
                         />
-                        <MaskedInput placeholder="WhatsApp" name="phone" onChange={handleInputChange}
+                        <MaskedInput placeholder="WhatsApp" value={phone} onChange={e => setPhone(e.target.value)}
                             mask={['(', /[0-9]/, /\d/, ')', ' ', /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]} />
-                  
-
-                        
-                        <textarea placeholder="Descrição" cols="30" rows="10" name="description" onChange={handleInputChange}></textarea>    
-                                                     
-
-
+                                        
+                        <textarea placeholder="Descrição" cols="30" rows="10"></textarea>
 
 
 

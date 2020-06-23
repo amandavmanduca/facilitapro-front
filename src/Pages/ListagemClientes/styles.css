@@ -196,3 +196,7 @@ td, th {
 tr:nth-child(even) {
     background-color: #dddddd;
 }
+
+.btn {
+    font-size: 13px;
+}

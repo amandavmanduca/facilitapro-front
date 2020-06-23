@@ -4,22 +4,9 @@ import logoImg from '../../assets/logo.PNG';
 import { FiPower } from 'react-icons/fi';
 import { AiFillHome } from 'react-icons/ai';
 import { FiTrash } from 'react-icons/fi';
-//import { FiTrash2 } from 'react-icons/fi';
 import './styles.css';
 import api from '../../services/api'
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-//import { faSpinner } from '@fortawesome/free-solid-svg-icons'
-//import { faCoffee } from '@fortawesome/free-solid-svg-icons'
-import Rating from '@material-ui/lab/Rating';
-import PropTypes from 'prop-types';
-import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
-import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
-import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied';
-import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAltOutlined';
-import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import { grey } from '@material-ui/core/colors';
+
 
 
 
@@ -37,6 +24,7 @@ export default function Profile() {
     const [solicitation, setSolicitation] = useState([]);
     const [budget, setBudget] = useState([]);
     const [professional, setProfessional] = useState([]);
+    const [service, setService] = useState([]);
     
     const cliNome = localStorage.getItem('cliNome');
 
@@ -46,47 +34,14 @@ export default function Profile() {
     const [visible, setVisible] = useState();
     const [visibleFin, setVisibleFin] = useState();
     localStorage.removeItem('professionalId');
-
-    const[statusS, setStatusS] = useState();
-    localStorage.setItem('statusS', statusS);
     
-
-    const[statusB, setStatusB] = useState('');
-
-    const[notaFP, setNotaFP] = useState();
-    const[notaProf, setNotaProf] = useState();
-    const[hover, setHover] = React.useState(-1);
-
     const[filtraId, setFiltraId] = useState();
 
-    const[idProfAv, setIdProfAv] = useState();
-    const[value, setValue] = useState();
-    const[client_id, setClient_id] = useState();
 
 
 
-
-    
-
-    const labels = {
-        0.5: '',
-        1: 'Não tive uma boa experiência',
-        1.5: '',
-        2: 'Regular',
-        2.5: '',
-        3: 'Bom',
-        3.5: '',
-        4: 'Muito Bom',
-        4.5: '',
-        5: 'Excelente',
-      };
 
     const[msg, setMsg] = useState('Clique agora para realizar o seu primeiro pedido:')
-
-
-    if(statusS === '' || statusS === undefined){
-        setStatusS('open');
-    }
 
 
     function handleToggle(idFilter) {
@@ -106,6 +61,17 @@ export default function Profile() {
             })
             .then(response => {
                 setSolicitation(response.data)
+        })
+    }, );
+
+    useEffect(() => {
+        api.get(`/services`, {
+            headers: {
+                'Authorization': `Bearer ` + token
+                }
+            })
+            .then(response => {
+                setService(response.data)
         })
     }, );
 
@@ -131,8 +97,6 @@ export default function Profile() {
         })
     }, );
 
-
-    
 
     function handleLogout() {
                      
@@ -205,120 +169,7 @@ export default function Profile() {
         history.push('/andamento')
     }
 
-    async function handleFinalizar(idS, idB) {
-        
 
-        const alteraStatusS = {
-            status: "finalizado"
-        }
-        const alteraStatusB = {
-            status: "finalizado"
-        }
-
-        await api.put(`/solicitations/${idS}`, alteraStatusS, {
-            headers: {
-                'Authorization': `Bearer ` + token
-                }
-            }
-        );
-        await api.put(`/budgets/${idB}`, alteraStatusB, {
-            headers: {
-                'Authorization': `Bearer ` + token
-                }
-            }
-        );
-        
-        return alert('Que legal! Seu pedido n#' + idS + " foi finalizado!")
-    }
-
-
-
-    function handleMeusPedidos() {
-        setStatusS('open');
-        setStatusB('');
-        setStatusB('enviado');
-        setVisible(false);
-        setVisibleFin(false);
-    }
-
-    function handleEmAndamento() {
-        setStatusS('fechado');
-        setStatusB('');
-        setStatusB('aceito');
-        setMsg('Você não possui nenhum serviço em andamento.')
-        setVisible(false);
-        setVisibleFin(false);
-        
-    }
-
-    function handleFinalizados() {
-        setStatusS('finalizado');
-        setStatusB('');
-        setStatusB('aceito');
-        setStatusB('finalizado');
-        setVisible(false);
-        setVisibleFin(false);
-        setMsg('Você não possui nenhum serviço finalizado.')
-    }
-
-    function handleExpirados() {
-        
-        setStatusS('expirado');
-
-        
-        setStatusB('');
-        setVisible(false);
-        setVisibleFin(false);
-        setMsg('Você não possui nenhum pedido expirado.')
-    }
-
-    function handleCancelados() {
-        setStatusS('cancelado');
-        setStatusB('');
-        setVisible(false);
-        setVisibleFin(false);
-        setMsg('Você não possui nenhum pedido cancelado.')
-    }
-
-
-
-    const customIcons = {
-        1: {
-          icon: <SentimentVeryDissatisfiedIcon />,
-          label: 'Very Dissatisfied',
-        },
-        2: {
-          icon: <SentimentDissatisfiedIcon />,
-          label: 'Dissatisfied',
-        },
-        3: {
-          icon: <SentimentSatisfiedIcon />,
-          label: 'Neutral',
-        },
-        4: {
-          icon: <SentimentSatisfiedAltIcon />,
-          label: 'Satisfied',
-        },
-        5: {
-          icon: <SentimentVerySatisfiedIcon />,
-          label: 'Very Satisfied',
-        },
-    };
-    
-    function IconContainer(props) {
-        const { value, ...other } = props;
-        return <span {...other}>{customIcons[value].icon}</span>;
-    }
-    
-    IconContainer.propTypes = {
-        value: PropTypes.number.isRequired,
-    };
-
-
-
-
-
-    
 
     return (
         <div className="div profile-container">
@@ -352,11 +203,18 @@ export default function Profile() {
                  
                     <ul>
                         {solicitation.filter(solicitation => solicitation.client_id === cliId)
+                        .sort(({ id: previousID }, { id: currentID }) => -previousID + currentID)
                         .filter(solicitation => solicitation.status === 'aberto')
                         .map(solicitation => (
                             <li key={solicitation.id}>
                                 <strong>Pedido #{solicitation.id}</strong>
-                                <strong>Serviço: {solicitation.services.name}</strong>
+                                <strong>Serviço: {service.filter(service => service.id === solicitation.service_id).map(service => (
+                                    <span key={service.id}>
+                                        <h3>{service.name}</h3>
+                                    </span>
+                                ))}
+                                </strong>
+                                <img style={{maxWidth: 200}} src={solicitation.photoUrl} alt="Foto"/>
                                 <p>Período Para Orçamentos: {handleData(solicitation.initialDate)} à {handleData(solicitation.finallyDate)}</p>
                                 <strong>DESCRIÇÃO:</strong>
                                 <h3>{solicitation.description}</h3>

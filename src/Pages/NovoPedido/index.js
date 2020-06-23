@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
 import './styles.css';
 import logoImg from '../../assets/logo.PNG';
 import { Link, useHistory } from 'react-router-dom';
@@ -9,6 +9,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Header from '../../Header';
+import Dropzone from '../../components/Dropzone';
+import { grey } from '@material-ui/core/colors';
+
 
 export default function NewIncident() {
 
@@ -17,17 +20,33 @@ export default function NewIncident() {
 
     
     const[service, setService] = useState([]);
-    const[service_id, setService_id] = useState();
-    const[description, setDescription] = useState();
-    const[initialDate, setInitialDate] = useState();
-    const[finallyDate, setFinallyDate] = useState();
-    const[address_id, setAddress_id] = useState();
+    //const[service_id, setService_id] = useState();
+    //const[description, setDescription] = useState();
+    //const[initialDate, setInitialDate] = useState();
+    //const[finallyDate, setFinallyDate] = useState();
+    //const[address_id, setAddress_id] = useState();
     const[status] = useState('aberto');
     const[address, setAddress] = useState([]);
     const history = useHistory([]);
     //const cliNome = localStorage.getItem('cliNome');
+    const[selectedFile, setSelectedFile] = useState();
+    const[formData, setFormData] = useState({
+        client_id: client_id,
+        service_id: '',
+        address_id: '',
+        initialDate: '',
+        description: '',
+        finallyDate: '',
+        status: status,
+    });
+
     
-    
+    function handleInputChange(event) {
+        const { name, value } = event.target;
+        setFormData({...formData, [name]: value })
+    }
+
+
     useEffect(() => {
         api.get(`/clients/${client_id}`, {
             headers: {
@@ -47,58 +66,59 @@ export default function NewIncident() {
     useEffect(() => {
         api.get('/services', {
             headers: {
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA4ODY2ZGFjLTRhMDktNGQ2ZS04YTcxLTExMjM4MTY3Y2I0NSIsImlhdCI6MTU4ODc5NTAwOX0.ufpowwr4wnrHtLWPVG3mr6HYxoWkwly_5jXvINAn0-Q`
-              },
+                'Authorization': `Bearer ` + token
+            },
             body: {
                 nome: service,
             }
         }).then(response => {
             setService(response.data);
         })
-    }, [service]);
-
-    
+    });
 
 
 
     async function handlePedido(e) {
-        e.preventDefault();
+        e.preventDefault()
 
-        const data = {
-            client_id,
-            service_id,
-            address_id,
-            description,
-            initialDate,
-            finallyDate,
-            status,
+
+        const { client_id, service_id, address_id, initialDate, description, finallyDate } = formData;
+
+
+        const data = new FormData();
+
+        data.append('client_id', client_id);
+        data.append('service_id', service_id);
+        data.append('address_id', address_id);
+        data.append('description', description);
+        data.append('initialDate', initialDate);
+        data.append('finallyDate', finallyDate);
+        data.append('status', status);
+
+        if(selectedFile) {
+            data.append('file', selectedFile);
         }
 
-        console.log(service_id);
+        if (service_id !== '' && description !== '' & initialDate !== '' & finallyDate !== '' & address_id !== '') {
 
-        console.log(data);
-        console.log(token);
-
-
-        if (service_id !== undefined && description !== undefined & initialDate !== undefined & finallyDate !== undefined & address_id !== undefined) {
 
             try {
-                await api.post(`/solicitations`, data, {
-                    headers: {
-                        'Authorization': `Bearer ` + token
-                        }
-                    }
-                );
-                
-                console.log(data);
+
+                const config = {     
+                    headers: { 'Authorization': `Bearer ` + token, 'content-type': 'multipart/form-data' }
+                }
+
+                await api.post(`/solicitations`, data, config).then(response => {
+                    console.log(response);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+
 
                 alert('Serviço Cadastrado!\nAguarde seus Orçamentos!\nVocê receberá atualizações por e-mail.')
                 history.push('/main');
 
-                
-                //const response = await api.post('/pedidos', data);
-                
-                //alert(`Código do seu pedido: response.data.id`);
 
             } catch (err) {
                 alert('Erro.')
@@ -108,6 +128,10 @@ export default function NewIncident() {
             alert('Preencher dados corretamente.')
         }
     }
+
+
+
+
 
     return (
         <div className="new-incident-container">
@@ -129,13 +153,14 @@ export default function NewIncident() {
                     </Link>
                 </section>
                 <form onSubmit={handlePedido}>
-                    <div className="buttonFk" style={{ marginTop: 0 }} type="submit">Realize seu Pedido</div>
+                    
+                    <div className="buttonFk" style={{ marginTop: 0 }}>Realize seu Pedido</div>
                     
                     <FormControl style={{ marginTop: 10 }} variant="outlined" className="formControl">
                         <InputLabel htmlFor="outlined-age-native-simple">Serviço a ser Realizado</InputLabel>
                         <Select
                             native
-                            value={service_id} onChange={e => setService_id(e.target.value)}
+                            name="service_id" onChange={handleInputChange}
                             label="Serviço a ser Realizado">
                             <option aria-label="None" value="" />
                             {service.map(serv =>
@@ -145,23 +170,25 @@ export default function NewIncident() {
                         </Select>
                     </FormControl>
 
-                    <div className="buttonFk2" type="submit">Descrição</div>
-                    <textarea placeholder="Descrição detalhada do serviço." value={description} onChange={e => setDescription(e.target.value)} />
+                    <div className="buttonFk2">Descrição</div>
+                    <textarea placeholder="Descrição detalhada do serviço." name="description" onChange={handleInputChange} />
                     
-                    <div className="buttonFk2" type="submit">Período que Necessita o Orçamento</div>
+                    <Dropzone onFileUploaded={setSelectedFile} />
+
+                    <div className="buttonFk2">Período que Necessita o Orçamento</div>
                     
                     
                     <div>
-                        <input type="date" style={{ width: "50%" }} value={initialDate} onChange={e => setInitialDate(e.target.value)} />
-                        <input type="date" style={{ width: "50%" }} value={finallyDate} onChange={e => setFinallyDate(e.target.value)} />
+                        <input type="date" style={{ width: "50%" }} name="initialDate" onChange={handleInputChange} />
+                        <input type="date" style={{ width: "50%" }} name="finallyDate" onChange={handleInputChange} />
                     </div>
-                    <div className="buttonFk2" type="submit">Local do Serviço</div>
+                    <div className="buttonFk2">Local do Serviço</div>
                     
                     <FormControl style={{ marginTop: 10 }} variant="outlined" className="formControl">
                         <InputLabel htmlFor="outlined-age-native-simple">Endereço</InputLabel>
                         <Select
                             native
-                            value={address_id} onChange={e => setAddress_id(e.target.value)}
+                            name="address_id" onChange={handleInputChange}
                             label="Endereço">
                             <option aria-label="None" value="" />
                             {address.map(adr =>

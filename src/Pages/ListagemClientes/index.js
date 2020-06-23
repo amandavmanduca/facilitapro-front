@@ -1,22 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import logoImg from '../../assets/logo.PNG';
-import { FiPower } from 'react-icons/fi';
-import { AiFillHome } from 'react-icons/ai';
+import { FiSkipForward } from 'react-icons/fi';
+import { FiSkipBack } from 'react-icons/fi';
 import { FiTrash2 } from 'react-icons/fi';
-//import { FiTrash22 } from 'react-icons/fi';
+import { FiDatabase } from 'react-icons/fi';
 import './styles.css';
 import api from '../../services/api'
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-//import { faSpinner } from '@fortawesome/free-solid-svg-icons'
-//import { faCoffee } from '@fortawesome/free-solid-svg-icons'
-import Rating from '@material-ui/lab/Rating';
-import PropTypes from 'prop-types';
-import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
-import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
-import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied';
-import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAltOutlined';
-import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
+import ReactToExcel from 'react-html-table-to-excel';
 import HeaderAdmin from '../../HeaderAdmin'
 import { PieChart } from 'react-minimal-pie-chart';
 
@@ -25,53 +16,39 @@ import { PieChart } from 'react-minimal-pie-chart';
 
 export default function Profile() {
 
-    const cliId = parseInt(localStorage.getItem('client_id'));
+
     const token = localStorage.getItem('admin_token');
     const Nome = localStorage.getItem('adminNome');
-    const [link, setLink] = useState();
-    const [name, setName] = useState('');
+
 
 
 
     const [solicitation, setSolicitation] = useState([]);
     const [clients, setClients] = useState([]);
+    const [clientsPage, setClientsPage] = useState([]);
+    const [clientsFull, setClientsFull] = useState([]);
     const [budget, setBudget] = useState([]);
     const [professional, setProfessional] = useState([]);
-    const [statusBusca, setStatusBusca] = useState('aberto');
+    const [visible, setVisible] = useState(true);
+
     
     
     const history = useHistory();
 
-
-
-    const [visible, setVisible] = useState();
-    const [visibleFin, setVisibleFin] = useState();
     localStorage.removeItem('professionalId');
 
     const[statusS, setStatusS] = useState();
     localStorage.setItem('statusS', statusS);
     
+    const[page, setPage] = useState(0);
 
-    const[statusB, setStatusB] = useState('');
-
-    const[notaFP, setNotaFP] = useState();
-    const[notaProf, setNotaProf] = useState();
-    const[hover, setHover] = React.useState(-1);
-
-    const[filtraId, setFiltraId] = useState();
-
-    const[idProfAv, setIdProfAv] = useState();
-    const[value, setValue] = useState();
-    const[client_id, setClient_id] = useState();
-
-
-
+    
     
     useEffect(() => {
         api.get(`/solicitations`, {
             headers: {
-                //'Authorization': `Bearer ` + token
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
+                'Authorization': `Bearer ` + token
+                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
@@ -82,8 +59,8 @@ export default function Profile() {
     useEffect(() => {
         api.get(`/budgets`, {
             headers: {
-                //'Authorization': `Bearer ` + token
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
+                'Authorization': `Bearer ` + token
+                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
@@ -94,14 +71,15 @@ export default function Profile() {
     useEffect(() => {
         api.get(`/professionals`, {
             headers: {
-                //'Authorization': `Bearer ` + token
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
+                'Authorization': `Bearer ` + token
+                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
                 setProfessional(response.data)
         })
-    },[professional] );
+    });
+
 
     useEffect(() => {
         api.get(`/clients`, {
@@ -110,9 +88,36 @@ export default function Profile() {
                 }
             })
             .then(response => {
-                setClients(response.data)
+                setClientsFull(response.data)
         })
-    }, );
+    }, [visible, token]);
+
+
+
+    useEffect(() => {
+        api.get(`/clients/paginate?page=${page}&limit=10`, {
+            headers: {
+                'Authorization': `Bearer ` + token
+                }
+            })
+            .then(response => {
+                setClients(response.data.clients.rows)
+        })
+    }, [page, token] );
+
+
+    useEffect(() => {
+        api.get(`/clients/paginate?page=${page}&limit=10`, {
+            headers: {
+                'Authorization': `Bearer ` + token
+                }
+            })
+            .then(response => {
+                setClientsPage(response.data.clients.rows)
+        })
+    }, [page, token] );
+
+
 
 
     
@@ -122,8 +127,8 @@ export default function Profile() {
         try {
             await api.delete(`/clients/${id}`, {
                 headers: {
-                    //'Authorization': `Bearer ` + token
-                    'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
+                    'Authorization': `Bearer ` + token
+                    //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             });
 
@@ -138,11 +143,11 @@ export default function Profile() {
     
 
     const pieDados = [
-        Number([clients.filter(client => client.recommendation === 'facebook').length]),
-        Number([clients.filter(client => client.recommendation === 'instagram').length]),
-        Number([clients.filter(client => client.recommendation === 'indicação').length]),
-        Number([clients.filter(client => client.recommendation === 'google').length]),
-        Number([clients.filter(client => client.recommendation === 'outro').length]),
+        Number([clientsFull.filter(client => client.recommendation === 'facebook').length]),
+        Number([clientsFull.filter(client => client.recommendation === 'instagram').length]),
+        Number([clientsFull.filter(client => client.recommendation === 'indicação').length]),
+        Number([clientsFull.filter(client => client.recommendation === 'google').length]),
+        Number([clientsFull.filter(client => client.recommendation === 'outro').length]),
     ]
 
 
@@ -163,6 +168,34 @@ export default function Profile() {
         window.open(link)
     }
 
+    function handleRetornar() {
+        if (page !== 0) {
+            setPage(page-1);
+            return
+        }
+    }
+
+    function handleAvancar() {
+        if (page !== 10) {
+            setPage(page+1)
+            return
+        }
+    }
+
+    function handleListagem() {
+        if (visible) {
+            setVisible(false)
+            setClients(clientsFull)
+        } else {
+            setVisible(true)
+            setPage(page)
+            setClients(clientsPage)
+        }
+
+    }
+
+
+
 
     return (
         <div>
@@ -180,12 +213,12 @@ export default function Profile() {
 
                     <div style={{ marginRight: 30, marginTop: 20 }}>
                         <h3>Recomendações</h3>
-                        <li>{clients.length} Clientes</li>
-                        <li style={{ backgroundColor: "#DCDCDC"}}>{clients.filter(client => client.recommendation === 'facebook').length} Facebook</li>
-                        <li style={{ backgroundColor: "#FAF0E6"}}>{clients.filter(client => client.recommendation === 'instagram').length} Instagram</li>
-                        <li style={{ backgroundColor: "#FFDAB9"}}>{clients.filter(client => client.recommendation === 'indicação').length} Indicação</li>
-                        <li style={{ backgroundColor: "#E6E6FA"}}>{clients.filter(client => client.recommendation === 'google').length} Google</li>
-                        <li style={{ backgroundColor: "#FFE4E1"}}>{clients.filter(client => client.recommendation === 'outro').length} Outro</li>
+                        <li>{clientsFull.length} Clientes</li>
+                        <li style={{ backgroundColor: "#DCDCDC"}}>{clientsFull.filter(client => client.recommendation === 'facebook').length} Facebook</li>
+                        <li style={{ backgroundColor: "#FAF0E6"}}>{clientsFull.filter(client => client.recommendation === 'instagram').length} Instagram</li>
+                        <li style={{ backgroundColor: "#FFDAB9"}}>{clientsFull.filter(client => client.recommendation === 'indicação').length} Indicação</li>
+                        <li style={{ backgroundColor: "#E6E6FA"}}>{clientsFull.filter(client => client.recommendation === 'google').length} Google</li>
+                        <li style={{ backgroundColor: "#FFE4E1"}}>{clientsFull.filter(client => client.recommendation === 'outro').length} Outro</li>
                     </div>
 
                 </section>
@@ -227,13 +260,46 @@ export default function Profile() {
                 </section>
             </body>
 
-
-
-
-
                 <h1 style={{ marginTop: 20 }}>Listagem de Clientes</h1>
 
-                <table style={{ marginTop: 5, marginLeft: -50 }}>
+                {visible ? <span>
+                    { page !== 0 ?
+                        <button onClick={() => handleRetornar()} style={{ marginRight: 15, backgroundColor: "transparent", border: "none"}}>
+                            {page} <FiSkipBack size={16} color="E02041" style={{ marginRight: "3px" }} />
+                        </button>
+                    : null}
+                    Página {page+1}
+                    { page !== 10 ?
+                        <button onClick={() => handleAvancar()} style={{ marginLeft: 15, backgroundColor: "transparent", border: "none"}}>
+                            <FiSkipForward size={16} color="E02041" style={{ marginRight: "3px" }} /> {page+2}
+                        </button>
+                    : null}
+                </span> : null }
+
+
+
+
+
+                <div style={{ float: "right", marginRight: 50, marginBottom: 10, color: "transparent" }}>
+                    {visible ?
+                        <button style={{ fontSize: 13, marginRight: 5 }} onClick={() => handleListagem()}>
+                            Listagem Completa
+                        </button>
+                        :
+                        <button style={{ fontSize: 13, marginRight: 5 }} onClick={() => handleListagem()}>
+                            Mostrar Páginas
+                        </button>}
+                    <ReactToExcel 
+                        className="btn"
+                        table="table-to-xls"
+                        filename='FacilitaPRO_listagem_clientes'
+                        sheet='sheet 1'
+                        buttonText='Exportar Excel'
+                    />
+                </div>
+
+
+                <table style={{ marginTop: 5, marginLeft: -50 }} id="table-to-xls">
                     <tr>
                         <td>ID</td>
                         <td style={{minWidth: 150 }}>Nome</td>
@@ -247,30 +313,34 @@ export default function Profile() {
                         <td>Ações</td>
                     </tr>
 
-                    {clients
-                        .sort(({ id: previousID }, { id: currentID }) => -previousID + currentID)
-                        .map(clients => (
-                        <tr key={clients.id}>
-                            <td>{clients.id}</td>
-                            <td style={{minWidth: 150 }}>{clients.name}</td>
-                            <td style={{minWidth: 150 }}>
-                                <button className="new-Button" style={{backgroundColor: "transparent", color: "black", fontSize: 14 }} type="button" onClick={() => handleWhatsApp(clients.phone)}>{clients.phone}</button>
-                            </td>
-                            <td>{clients.solicitations.length}</td>
-                            <td>{clients.solicitations.filter(solicitations => solicitations.status === "aberto").length}</td>
-                            <td>{clients.solicitations.filter(solicitations => solicitations.status === "fechado").length}</td>
-                            <td>{clients.solicitations.filter(solicitations => solicitations.status === "finalizado").length}</td>
-                            <td style={{minWidth: 150 }}>{clients.cpf}</td>
-                            <td>{clients.email}</td>
-                            <td>
-                                <button style={{ border: "none", backgroundColor: "transparent" }} title="Deletar" onClick={ () => { if (window.confirm('Você deseja excluir o(a) cliente ' + clients.name + ' ?')) handleExcluir(clients.id)} }>
-                                    <FiTrash2 size={18} color="#E02041" />  
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
+                        
+                        {clients
+                            .sort(({ id: previousID }, { id: currentID }) => -previousID + currentID)
+                            .map(clients => (
+                            <tr key={clients.id}>
+                                <td>{clients.id}</td>
+                                <td style={{minWidth: 150 }}>{clients.name}</td>
+                                <td style={{minWidth: 150 }}>
+                                    <button className="new-Button" style={{backgroundColor: "transparent", color: "black", fontSize: 14 }} type="button" onClick={() => handleWhatsApp(clients.phone)}>{clients.phone}</button>
+                                </td>
+                                <td>{clients.solicitations.length}</td>
+                                <td>{clients.solicitations.filter(solicitations => solicitations.status === "aberto").length}</td>
+                                <td>{clients.solicitations.filter(solicitations => solicitations.status === "fechado").length}</td>
+                                <td>{clients.solicitations.filter(solicitations => solicitations.status === "finalizado").length}</td>
+                                <td style={{minWidth: 150 }}>{clients.cpf}</td>
+                                <td>{clients.email}</td>
+                                <td>
+                                    <button style={{ border: "none", backgroundColor: "transparent" }} title="Deletar" onClick={ () => { if (window.confirm('Você deseja excluir o(a) cliente ' + clients.name + ' ?')) handleExcluir(clients.id)} }>
+                                        <FiTrash2 size={18} color="#E02041" />  
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    
+
+                    
+
                 </table>
-            
             
 
 

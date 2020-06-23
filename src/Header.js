@@ -26,7 +26,7 @@ export default function Header() {
                     
                     
                     </div>
-                    <ul class="nav navbar-nav">
+                    <ul>
                         <li><a class="navbar-brand" href="/">Início</a></li>
                         <li class="active"><a href="/login">Login</a></li>
                         <li><a href="/register">Realizar Cadastro</a></li>

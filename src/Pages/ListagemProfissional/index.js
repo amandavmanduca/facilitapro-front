@@ -1,24 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import logoImg from '../../assets/logo.PNG';
-import { FiPower } from 'react-icons/fi';
-import { AiFillHome } from 'react-icons/ai';
 import { FiTrash2 } from 'react-icons/fi';
-//import { FiTrash22 } from 'react-icons/fi';
 import './styles.css';
 import api from '../../services/api'
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-//import { faSpinner } from '@fortawesome/free-solid-svg-icons'
-//import { faCoffee } from '@fortawesome/free-solid-svg-icons'
-import Rating from '@material-ui/lab/Rating';
-import PropTypes from 'prop-types';
-import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
-import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
-import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied';
-import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAltOutlined';
-import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
+import ReactToExcel from 'react-html-table-to-excel';
 import HeaderAdmin from '../../HeaderAdmin'
 import { PieChart } from 'react-minimal-pie-chart';
+import { FiSkipForward } from 'react-icons/fi';
+import { FiSkipBack } from 'react-icons/fi';
 
 
 
@@ -26,11 +16,10 @@ import { PieChart } from 'react-minimal-pie-chart';
 
 export default function Profile() {
 
-    const cliId = parseInt(localStorage.getItem('client_id'));
+
     const token = localStorage.getItem('admin_token');
     const Nome = localStorage.getItem('adminNome');
-    const [link, setLink] = useState();
-    const [name, setName] = useState('');
+
 
 
 
@@ -38,32 +27,23 @@ export default function Profile() {
     const [clients, setClients] = useState([]);
     const [budget, setBudget] = useState([]);
     const [professional, setProfessional] = useState([]);
-    const [statusBusca, setStatusBusca] = useState('aberto');
+    const [visible, setVisible] = useState(true);
+    const [professionalPage, setProfessionalsPage] = useState([]);
+    const [professionalFull, setProfessionalsFull] = useState([]);
+
     
     
     const history = useHistory();
 
 
 
-    const [visible, setVisible] = useState();
-    const [visibleFin, setVisibleFin] = useState();
+
     localStorage.removeItem('professionalId');
 
     const[statusS, setStatusS] = useState();
     localStorage.setItem('statusS', statusS);
-    
 
-    const[statusB, setStatusB] = useState('');
-
-    const[notaFP, setNotaFP] = useState();
-    const[notaProf, setNotaProf] = useState();
-    const[hover, setHover] = React.useState(-1);
-
-    const[filtraId, setFiltraId] = useState();
-
-    const[idProfAv, setIdProfAv] = useState();
-    const[value, setValue] = useState();
-    const[client_id, setClient_id] = useState();
+    const[page, setPage] = useState(0);
 
 
 
@@ -75,8 +55,8 @@ export default function Profile() {
     useEffect(() => {
         api.get(`/solicitations`, {
             headers: {
-                //'Authorization': `Bearer ` + token
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
+                'Authorization': `Bearer ` + token
+                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
@@ -87,8 +67,8 @@ export default function Profile() {
     useEffect(() => {
         api.get(`/budgets`, {
             headers: {
-                //'Authorization': `Bearer ` + token
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
+                'Authorization': `Bearer ` + token
+                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
@@ -97,16 +77,43 @@ export default function Profile() {
     }, );
 
     useEffect(() => {
-        api.get(`/professionals`, {
+        api.get(`/professionals/paginate?page=${page}&limit=10`, {
             headers: {
-                //'Authorization': `Bearer ` + token
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
+                'Authorization': `Bearer ` + token
+                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
-                setProfessional(response.data)
+                setProfessional(response.data.professionals.rows)
         })
-    },[professional] );
+    },[page, token] );
+
+
+    useEffect(() => {
+        api.get(`/professionals/paginate?page=${page}&limit=10`, {
+            headers: {
+                'Authorization': `Bearer ` + token
+                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
+                }
+            })
+            .then(response => {
+                setProfessionalsPage(response.data.professionals.rows)
+        })
+    },[page, token] );
+
+
+    useEffect(() => {
+        api.get(`/professionals`, {
+            headers: {
+                'Authorization': `Bearer ` + token
+                }
+            })
+            .then(response => {
+                setProfessionalsFull(response.data)
+        })
+    });
+
+
 
     useEffect(() => {
         api.get(`/clients`, {
@@ -128,7 +135,7 @@ export default function Profile() {
             await api.delete(`/professionals/${id}`, {
                 headers: {
                     'Authorization': `Bearer ` + token
-                    }
+                }
             });
 
             alert('Profissional Excluído com Sucesso.')
@@ -139,10 +146,10 @@ export default function Profile() {
     }
 
     const pieDadosProfessional = [
-        Number([professional.filter(profession => profession.profession.name === "Encanador").length]),
-        Number([professional.filter(profession => profession.profession.name === "Pintor").length]),
-        Number([professional.filter(profession => profession.profession.name === "Pedreiro").length]),
-        Number([professional.filter(profession => profession.profession.name === "Eletricista").length]),
+        Number([professionalFull.filter(profession => profession.profession.name === "Encanador").length]),
+        Number([professionalFull.filter(profession => profession.profession.name === "Pintor").length]),
+        Number([professionalFull.filter(profession => profession.profession.name === "Pedreiro").length]),
+        Number([professionalFull.filter(profession => profession.profession.name === "Eletricista").length]),
     ]
 
     const pieDadosOrcamentos = [
@@ -161,6 +168,32 @@ export default function Profile() {
         window.open(link)
     }
 
+    
+    function handleRetornar() {
+        if (page !== 0) {
+            setPage(page-1);
+            return
+        }
+    }
+
+    function handleAvancar() {
+        if (page !== 10) {
+            setPage(page+1)
+            return
+        }
+    }
+
+    function handleListagem() {
+        if (visible) {
+            setVisible(false)
+            setProfessional(professionalFull)
+        } else {
+            setVisible(true)
+            setPage(page)
+            setProfessional(professionalPage)
+        }
+
+    }
 
 
     return (
@@ -179,11 +212,11 @@ export default function Profile() {
 
                     <div style={{ marginRight: 30, marginTop: 20 }}>
                         <h3>Principais Profissões</h3>
-                        <li>{professional.length} Profissionais</li>
-                        <li style={{ backgroundColor: "#DCDCDC"}}>{professional.filter(profession => profession.profession.name === "Encanador").length} Encanador</li>
-                        <li style={{ backgroundColor: "#FAF0E6"}}>{professional.filter(profession => profession.profession.name === "Pintor").length} Pintor</li>
-                        <li style={{ backgroundColor: "#FFDAB9"}}>{professional.filter(profession => profession.profession.name === "Pedreiro").length} Pedreiro</li>
-                        <li style={{ backgroundColor: "#E6E6FA"}}>{professional.filter(profession => profession.profession.name === "Eletricista").length} Eletricista</li>
+                        <li>{professionalFull.length} Profissionais</li>
+                        <li style={{ backgroundColor: "#DCDCDC"}}>{professionalFull.filter(profession => profession.profession.name === "Encanador").length} Encanador</li>
+                        <li style={{ backgroundColor: "#FAF0E6"}}>{professionalFull.filter(profession => profession.profession.name === "Pintor").length} Pintor</li>
+                        <li style={{ backgroundColor: "#FFDAB9"}}>{professionalFull.filter(profession => profession.profession.name === "Pedreiro").length} Pedreiro</li>
+                        <li style={{ backgroundColor: "#E6E6FA"}}>{professionalFull.filter(profession => profession.profession.name === "Eletricista").length} Eletricista</li>
                     </div>
 
                 </section>
@@ -223,6 +256,44 @@ export default function Profile() {
 
 
                 <h1 style={{ marginTop: 15 }}>Listagem de Profissionais</h1>
+                
+                {visible ? <span>
+                    { page !== 0 ?
+                        <button onClick={() => handleRetornar()} style={{ marginRight: 15, backgroundColor: "transparent", border: "none"}}>
+                            {page} <FiSkipBack size={16} color="E02041" style={{ marginRight: "3px" }} />
+                        </button>
+                    : null}
+                    Página {page+1}
+                    { page !== 10 ?
+                        <button onClick={() => handleAvancar()} style={{ marginLeft: 15, backgroundColor: "transparent", border: "none"}}>
+                            <FiSkipForward size={16} color="E02041" style={{ marginRight: "3px" }} /> {page+2}
+                        </button>
+                    : null}
+                </span> : null }
+
+
+
+
+
+                <div style={{ float: "right", marginRight: 50, marginBottom: 10, color: "transparent" }}>
+                    {visible ?
+                        <button style={{ fontSize: 13, marginRight: 5 }} onClick={() => handleListagem()}>
+                            Listagem Completa
+                        </button>
+                        :
+                        <button style={{ fontSize: 13, marginRight: 5 }} onClick={() => handleListagem()}>
+                            Mostrar Páginas
+                        </button>}
+                    <ReactToExcel 
+                        className="btn"
+                        table="table-to-xls"
+                        filename='FacilitaPRO_listagem_professionals'
+                        sheet='sheet 1'
+                        buttonText='Exportar Excel'
+                    />
+                </div>
+
+
                 <table style={{ marginTop: 10, marginLeft: -50 }}>
                     <tr>
                         <td>ID</td>

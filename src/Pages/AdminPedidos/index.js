@@ -28,7 +28,7 @@ export default function Profile() {
     const [budget, setBudget] = useState([]);
     const [professional, setProfessional] = useState([]);
     const [statusBusca, setStatusBusca] = useState('aberto');
-    
+    const [service, setService] = useState([]);
     
 
 
@@ -52,8 +52,8 @@ export default function Profile() {
     useEffect(() => {
         api.get(`/solicitations`, {
             headers: {
-                //'Authorization': `Bearer ` + token
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
+                'Authorization': `Bearer ` + token
+                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
@@ -64,8 +64,8 @@ export default function Profile() {
     useEffect(() => {
         api.get(`/budgets`, {
             headers: {
-                //'Authorization': `Bearer ` + token
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
+                'Authorization': `Bearer ` + token
+                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
@@ -76,8 +76,8 @@ export default function Profile() {
     useEffect(() => {
         api.get(`/professionals`, {
             headers: {
-                //'Authorization': `Bearer ` + token
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
+                'Authorization': `Bearer ` + token
+                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
@@ -93,6 +93,17 @@ export default function Profile() {
             })
             .then(response => {
                 setClients(response.data)
+        })
+    }, );
+
+    useEffect(() => {
+        api.get(`/services`, {
+            headers: {
+                'Authorization': `Bearer ` + token
+                }
+            })
+            .then(response => {
+                setService(response.data)
         })
     }, );
 
@@ -113,8 +124,8 @@ export default function Profile() {
 
         await api.put(`/solicitations/${idS}`, alteraStatusS, {
             headers: {
-                //'Authorization': `Bearer ` + token
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
+                'Authorization': `Bearer ` + token
+                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             }
         );
@@ -123,17 +134,18 @@ export default function Profile() {
                 
     }
 
-    async function handleCancelarBudget(idB, totalB) {
+    async function handleCancelarBudget(idB, valueB, taxB) {
         
         const alteraStatusB = {
             status: "cancelado",
-            total: totalB
+            value: valueB,
+            tax: taxB
         }
 
         await api.put(`/budgets/${idB}`, alteraStatusB, {
             headers: {
-                //'Authorization': `Bearer ` + token
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
+                'Authorization': `Bearer ` + token
+                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             }
         );
@@ -206,6 +218,13 @@ export default function Profile() {
                             .map(solicitation => (
                                 <li key={solicitation.id}>
                                     <strong>Pedido #{solicitation.id}</strong>
+                                    <strong>Serviço: {service.filter(service => service.id === solicitation.service_id).map(service => (
+                                        <span key={service.id}>
+                                            <h3>{service.name}</h3>
+                                        </span>
+                                    ))}
+                                    </strong>
+                                    <img style={{maxWidth: 200}} src={solicitation.photoUrl} alt="Foto"/>
                                     <strong>Cliente #{solicitation.client_id}</strong>
                                     <strong>
                                         {clients.filter(client => client.id === solicitation.client_id).map(client => (
@@ -217,7 +236,7 @@ export default function Profile() {
                                     </strong>
                                     <strong>Endereço: {solicitation.address.street} nº{solicitation.address.number} [{solicitation.address.complement}]</strong>
                                     <br />
-                                    <strong>Serviço: {solicitation.services.name}</strong>
+                                    
                                     <p style={{ margin: 0 }}>Período Para Orçamentos: {handleData(solicitation.initialDate)} à {handleData(solicitation.finallyDate)}</p>
                                     <strong>DESCRIÇÃO:</strong>
                                     <h3>{solicitation.description}</h3>
@@ -258,7 +277,7 @@ export default function Profile() {
                                                 <p>Taxa FacilitaPRO R$ {budget.tax}</p>
 
                                                 
-                                                <button type="button" style={{ backgroundColor: "transparent", marginTop: 0 }} title="Cancelar" onClick={ () => { if (window.confirm('Você deseja cancelar o orçamento ' + budget.id + ' ?')) handleCancelarBudget(budget.id, budget.total)} } >
+                                                <button type="button" style={{ backgroundColor: "transparent", marginTop: 0 }} title="Cancelar" onClick={ () => { if (window.confirm('Você deseja cancelar o orçamento ' + budget.id + ' ?')) handleCancelarBudget(budget.id, budget.value, budget.tax)} } >
                                                     <FiTrash2 size={18} color="#E02041" />  
                                                 </button>
                                             </li>

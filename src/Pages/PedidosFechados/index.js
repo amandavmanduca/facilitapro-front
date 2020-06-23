@@ -33,6 +33,7 @@ export default function ProfileFinalizado() {
 
     const [solicitation, setSolicitation] = useState([]);
     const [professional, setProfessional] = useState([]);
+    const [service, setService] = useState([]);
     
     const cliNome = localStorage.getItem('cliNome');
     const history = useHistory();
@@ -84,14 +85,11 @@ export default function ProfileFinalizado() {
                         }
                     }
                 );
-                
-                alert('Avaliação Cadastrada com Sucesso.')
+
     
             } catch (err) {
                 alert ('Por favor, tente novamente.')
     
-            } finally {
-                
             }
     
     
@@ -104,7 +102,7 @@ export default function ProfileFinalizado() {
                     user_id,
                     value
                 }
-                // TODO: DEVE ATUALIZAR ESSA ROTA --- ESSA ESTÁ ERRADA
+
                 await api.post(`/appreviews`, avaliacoes, {
                     headers: {
                         'Authorization': `Bearer ` + token
@@ -117,8 +115,6 @@ export default function ProfileFinalizado() {
             } catch (err) {
                 alert ('Por favor, tente novamente.')
     
-            } finally {
-                
             }
             
             history.push('/fechados')
@@ -179,6 +175,17 @@ export default function ProfileFinalizado() {
         })
     }, );
 
+    useEffect(() => {
+        api.get(`/services`, {
+            headers: {
+                'Authorization': `Bearer ` + token
+                }
+            })
+            .then(response => {
+                setService(response.data)
+        })
+    }, );
+
 
     
 
@@ -208,75 +215,11 @@ export default function ProfileFinalizado() {
 
 
 
-    async function handleAccept(idS, idB) {
-        const alteraStatusS = {
-            status: "fechado"
-        }
-        const alteraStatusB = {
-            status: "aceito"
-        }
-
-        await api.put(`/solicitations/${idS}`, alteraStatusS, {
-            headers: {
-                'Authorization': `Bearer ` + token
-                }
-            }
-        );
-        await api.put(`/budgets/${idB}`, alteraStatusB, {
-            headers: {
-                'Authorization': `Bearer ` + token
-                }
-            }
-        );
-        
-        return alert('Você aceitou o pedido n#' + idS)
-    }
-
-    async function handleFinalizar(idS, idB) {
-        
-
-        const alteraStatusS = {
-            status: "finalizado"
-        }
-        const alteraStatusB = {
-            status: "finalizado"
-        }
-
-        await api.put(`/solicitations/${idS}`, alteraStatusS, {
-            headers: {
-                'Authorization': `Bearer ` + token
-                }
-            }
-        );
-        await api.put(`/budgets/${idB}`, alteraStatusB, {
-            headers: {
-                'Authorization': `Bearer ` + token
-                }
-            }
-        );
-        
-        return alert('Que legal! Seu pedido n#' + idS + " foi finalizado!")
-    }
 
 
-    function handleExpirados() {
-        
-        setStatusS('expirado');
 
-        
-        setStatusB('');
-        setVisible(false);
-        setVisibleFin(false);
-        setMsg('Você não possui nenhum pedido expirado.')
-    }
 
-    function handleCancelados() {
-        setStatusS('cancelado');
-        setStatusB('');
-        setVisible(false);
-        setVisibleFin(false);
-        setMsg('Você não possui nenhum pedido cancelado.')
-    }
+
 
 
 
@@ -361,11 +304,18 @@ export default function ProfileFinalizado() {
                  
                     <ul>
                         {solicitation.filter(solicitation => solicitation.client_id === client_id)
+                        .sort(({ id: previousID }, { id: currentID }) => -previousID + currentID)
                         .filter(solicitation => solicitation.status === "finalizado")
                         .map(solicitation => (
                             <li key={solicitation.id}>
                                 <strong>Pedido #{solicitation.id}</strong>
-                                <strong>Serviço: {solicitation.services.name}</strong>
+                                <strong>Serviço: {service.filter(service => service.id === solicitation.service_id).map(service => (
+                                    <span key={service.id}>
+                                        <h3>{service.name}</h3>
+                                    </span>
+                                ))}
+                                </strong>
+                                <img style={{maxWidth: 200}} src={solicitation.photoUrl} alt="Foto"/>
                                 <strong>DESCRIÇÃO:</strong>
                                 <h3>{solicitation.description}</h3>
                                 <button onClick={() => handleToggle(solicitation.id)} type="button">Ver Detalhes</button>
@@ -380,7 +330,7 @@ export default function ProfileFinalizado() {
                                                 <li key={professional.id}>
                                                     <p>{professional.name}</p>
                                                     <p>{professional.profession.name}</p>
-                                                    <p>Entre em Contato: {professional.phone}</p>
+                  
 
 
                                                     <button style={{ marginTop: 0, marginRight: -25 }} type="button" onClick={() => handleAvaliacoes(professional.id)}>Realizar Avaliação</button>

@@ -23,6 +23,7 @@
     "react-charts": "^2.0.2-next.6",
     "react-dom": "^16.13.1",
     "react-dropzone": "^11.0.1",
+    "react-html-table-to-excel": "^2.0.0",
     "react-icons": "^3.10.0",
     "react-input-mask": "^2.0.4",
     "react-minimal-pie-chart": "^8.0.1",

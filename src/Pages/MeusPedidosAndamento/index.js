@@ -3,12 +3,8 @@ import { Link, useHistory } from 'react-router-dom';
 import logoImg from '../../assets/logo.PNG';
 import { FiPower } from 'react-icons/fi';
 import { AiFillHome } from 'react-icons/ai';
-//import { FiTrash2 } from 'react-icons/fi';
 import './styles.css';
 import api from '../../services/api'
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-//import { faSpinner } from '@fortawesome/free-solid-svg-icons'
-//import { faCoffee } from '@fortawesome/free-solid-svg-icons'
 import Rating from '@material-ui/lab/Rating';
 import PropTypes from 'prop-types';
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
@@ -35,6 +31,7 @@ export default function ProfileAndamento() {
     const [solicitation, setSolicitation] = useState([]);
     const [budget, setBudget] = useState([]);
     const [professional, setProfessional] = useState([]);
+    const [service, setService] = useState([]);
     
     const cliNome = localStorage.getItem('cliNome');
     const history = useHistory();
@@ -44,12 +41,7 @@ export default function ProfileAndamento() {
     const [visible, setVisible] = useState();
     const [visibleFin, setVisibleFin] = useState();
     localStorage.removeItem('professionalId');
-
-    const[statusS, setStatusS] = useState();
-    localStorage.setItem('statusS', statusS);
     
-
-    const[statusB, setStatusB] = useState('');
 
     const[notaFP, setNotaFP] = useState();
     const[notaProf, setNotaProf] = useState();
@@ -62,29 +54,6 @@ export default function ProfileAndamento() {
     const[client_id, setClient_id] = useState();
 
 
-
-
-    
-
-    const labels = {
-        0.5: '',
-        1: 'Não tive uma boa experiência',
-        1.5: '',
-        2: 'Regular',
-        2.5: '',
-        3: 'Bom',
-        3.5: '',
-        4: 'Muito Bom',
-        4.5: '',
-        5: 'Excelente',
-      };
-
-    const[msg, setMsg] = useState('Clique agora para realizar o seu primeiro pedido:')
-
-
-    if(statusS === '' || statusS === undefined){
-        setStatusS('open');
-    }
 
 
     function handleToggle(idFilter) {
@@ -129,6 +98,17 @@ export default function ProfileAndamento() {
         })
     }, );
 
+    useEffect(() => {
+        api.get(`/services`, {
+            headers: {
+                'Authorization': `Bearer ` + token
+                }
+            })
+            .then(response => {
+                setService(response.data)
+        })
+    }, );
+
 
     
 
@@ -155,32 +135,6 @@ export default function ProfileAndamento() {
         return NewData[2] + '/' + NewData[1] + '/' + NewData[0];
     }
 
-
-
-
-    async function handleAccept(idS, idB) {
-        const alteraStatusS = {
-            status: "fechado"
-        }
-        const alteraStatusB = {
-            status: "aceito"
-        }
-
-        await api.put(`/solicitations/${idS}`, alteraStatusS, {
-            headers: {
-                'Authorization': `Bearer ` + token
-                }
-            }
-        );
-        await api.put(`/budgets/${idB}`, alteraStatusB, {
-            headers: {
-                'Authorization': `Bearer ` + token
-                }
-            }
-        );
-        
-        return alert('Você aceitou o pedido n#' + idS)
-    }
 
     async function handleFinalizar(idS, idB, bValue, bTax) {
         
@@ -212,95 +166,18 @@ export default function ProfileAndamento() {
         return alert('Que legal! Seu pedido n#' + idS + " foi finalizado!")
     }
 
-
-
-
-
-    const customIcons = {
-        1: {
-          icon: <SentimentVeryDissatisfiedIcon />,
-          label: 'Very Dissatisfied',
-        },
-        2: {
-          icon: <SentimentDissatisfiedIcon />,
-          label: 'Dissatisfied',
-        },
-        3: {
-          icon: <SentimentSatisfiedIcon />,
-          label: 'Neutral',
-        },
-        4: {
-          icon: <SentimentSatisfiedAltIcon />,
-          label: 'Satisfied',
-        },
-        5: {
-          icon: <SentimentVerySatisfiedIcon />,
-          label: 'Very Satisfied',
-        },
-    };
-    
-    function IconContainer(props) {
-        const { value, ...other } = props;
-        return <span {...other}>{customIcons[value].icon}</span>;
-    }
-    
-    IconContainer.propTypes = {
-        value: PropTypes.number.isRequired,
-    };
-
-
-
-
-    function handleAvaliacoes(idProf) {
-        
-        setVisibleFin(true);
-        localStorage.setItem('idProfAv', idProf);
+    async function handleWhatsApp(phone) {
+        const nu = phone.split(' ').join('')
+        const n = nu.split('-').join('')
+        const num = n.split(')').join('')
+        const wp = (num.split('(').join(''))
+        const link = "https://wa.me/55" + wp
+        window.open(link)
     }
 
-    async function handleAvaliar(idS, aP, aFP) {
-        if(aP === undefined) {
-            alert('Você deve avaliar o profissional.');
-            return
-        }
-        if(aFP === undefined) {
-            alert('Você deve avaliar a plataforma FacilitaPRO')
-        }
-
-        
-
-        setIdProfAv(parseInt(localStorage.getItem('idProfAv')));
-
-        alert('nota prof '+ aP + ' idProf ' + idProfAv);
-
-        setClient_id(30011261);
-        
-        setValue(parseInt(aP));
-
-        const avalia = {
-            client_id,
-            value
-        }
-
-        alert(avalia.client_id);
-        alert(avalia.value);
-
-        
-        await api.post(`/client/reviews/31`, avalia, {
-                headers: {
-                    'Authorization': `Bearer ` + token
-                    }
-                }
-            );
-        
-
-        alert('Avaliação Cadastrada com Sucesso.')
 
 
-        alert('nota prof ' + aP + '\nnota facilita ' + aFP +'\nid serviço '+idS);
-    
-        } 
 
-    
 
     return (
         <div className="div profile-container">
@@ -334,11 +211,18 @@ export default function ProfileAndamento() {
                  
                     <ul>
                         {solicitation.filter(solicitation => solicitation.client_id === cliId)
+                        .sort(({ id: previousID }, { id: currentID }) => -previousID + currentID)
                         .filter(solicitation => solicitation.status === "fechado")
                         .map(solicitation => (
                             <li key={solicitation.id}>
                                 <strong>Pedido #{solicitation.id}</strong>
-                                <strong>Serviço: {solicitation.services.name}</strong>
+                                <strong>Serviço: {service.filter(service => service.id === solicitation.service_id).map(service => (
+                                    <span key={service.id}>
+                                        <h3>{service.name}</h3>
+                                    </span>
+                                ))}
+                                </strong>
+                                <img style={{maxWidth: 200}} src={solicitation.photoUrl} alt="Foto"/>
                                 <p>Período Para Orçamentos: {handleData(solicitation.initialDate)} à {handleData(solicitation.finallyDate)}</p>
                                 <strong>DESCRIÇÃO:</strong>
                                 <h3>{solicitation.description}</h3>
@@ -354,6 +238,7 @@ export default function ProfileAndamento() {
                                                 <li key={professional.id}>
                                                     <p>{professional.name}</p>
                                                     <p>{professional.profession.name}</p>
+                                                    <button className="new-Button" style={{backgroundColor: "transparent", color: "black", fontSize: 14 }} type="button" onClick={() => handleWhatsApp(professional.phone)}>{professional.phone}</button>
                                             
                                                     <button style={{ marginTop: 0, marginRight: -25 }} type="button" onClick={() => handleFinalizar(solicitation.id, budget.id, budget.value, budget.tax)}>Serviço Finalizado</button>
                                                     
@@ -368,45 +253,7 @@ export default function ProfileAndamento() {
                                 ))}</h3>
 
                                 </span>  : null }</p>
-                                <p>{(visibleFin === true && solicitation.status === 'finalizado' && solicitation.id === filtraId) ?
-                                    <span>
-                                        <li>
-                                            <p>Parabéns! Seu serviço foi finalizado com sucesso!</p>
-                                            <p>Pedimos que você avalie nosso profissional e a plataforma FacilitaPRO</p>
-                                            <p>Seu boleto está disponível no E-mail de cadastro</p>
-                                            
-                                            <form style={{ marginTop: 10}}>
-                                                
-                                                <Box component="fieldset" mb={3} borderColor="transparent">
-                                                    <Typography component="legend">Avaliação do Profissional</Typography>
-                                                    <Rating
-                                                    name="customized-icons"
-                                                    defaultValue={null}
-                                                    value={notaProf}
-                                                    getLabelText={(value) => customIcons[value].label}
-                                                    IconContainerComponent={IconContainer}
-                                                    onChange={(event, newValue) => {
-                                                        setNotaProf(newValue);
-                                                        }}
-                                                    />
-                                                </Box>
-                                                <p>Avaliação do FacilitaPRO</p>
-                                                <Rating size="large"
-                                                    name="hover-feedback"
-                                                    value={notaFP}
-                                                    precision={0.5}
-                                                    onChange={(event, newValue) => {
-                                                    setNotaFP(newValue);
-                                                    }}
-                                                    onChangeActive={(event, newHover) => {
-                                                    setHover(newHover);
-                                                    }}
-                                                />
-                                                {notaFP !== null && <Box ml={2}>{labels[hover !== -1 ? hover : notaFP]}</Box>}
-                                                <button onClick={() => handleAvaliar(solicitation.id, notaProf, notaFP)}>Enviar Avaliações</button>
-                                            </form>
-                                        </li>
-                                    </span> : null}</p>
+                                
                             </li>
                         ))}
                                     
@@ -415,7 +262,7 @@ export default function ProfileAndamento() {
                 </span>
                      
                      :   <span>
-                            <p>{msg}</p>
+                            
                             <button className="buttonFk2" onClick={() => history.push('/pedido')}>Solicitar Orçamento</button>
                          </span>
          
