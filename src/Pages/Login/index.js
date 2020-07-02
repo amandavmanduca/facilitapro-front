@@ -24,8 +24,6 @@ export default function Logon() {
         try {
 
             const response = await api.get('/login', {
-                // Axios looks for the `auth` option, and, if it is set, formats a
-                // basic auth header for you automatically.
                 auth: {
                   username: email,
                   password: password

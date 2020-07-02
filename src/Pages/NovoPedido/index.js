@@ -4,13 +4,14 @@ import logoImg from '../../assets/logo.PNG';
 import { Link, useHistory } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import api from '../../services/api';
-import MaskedInput from 'react-text-mask';
+
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Header from '../../Header';
 import Dropzone from '../../components/Dropzone';
-import { grey } from '@material-ui/core/colors';
+import moment from 'moment';
+
 
 
 export default function NewIncident() {
@@ -26,6 +27,7 @@ export default function NewIncident() {
     //const[finallyDate, setFinallyDate] = useState();
     //const[address_id, setAddress_id] = useState();
     const[status] = useState('aberto');
+    const[rated] = useState(0);
     const[address, setAddress] = useState([]);
     const history = useHistory([]);
     //const cliNome = localStorage.getItem('cliNome');
@@ -38,7 +40,9 @@ export default function NewIncident() {
         description: '',
         finallyDate: '',
         status: status,
+        rated: rated,
     });
+
 
     
     function handleInputChange(event) {
@@ -78,12 +82,14 @@ export default function NewIncident() {
 
 
 
+
     async function handlePedido(e) {
         e.preventDefault()
 
 
-        const { client_id, service_id, address_id, initialDate, description, finallyDate } = formData;
-
+        const { client_id, service_id, address_id, description,  } = formData;
+        const initialDate = moment().format("YYYY/MM/DD")
+        const finallyDate = moment().format("YYYY/MM/DD")
 
         const data = new FormData();
 
@@ -94,6 +100,7 @@ export default function NewIncident() {
         data.append('initialDate', initialDate);
         data.append('finallyDate', finallyDate);
         data.append('status', status);
+        data.append('rated', rated);
 
         if(selectedFile) {
             data.append('file', selectedFile);

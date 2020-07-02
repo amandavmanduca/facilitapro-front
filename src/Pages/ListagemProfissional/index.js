@@ -294,7 +294,7 @@ export default function Profile() {
                 </div>
 
 
-                <table style={{ marginTop: 10, marginLeft: -50 }}>
+                <table style={{ marginTop: 10, marginLeft: -50 }} id="table-to-xls">
                     <tr>
                         <td>ID</td>
                         <td style={{minWidth: 150 }}>Nome</td>

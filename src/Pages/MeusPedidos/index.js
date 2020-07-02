@@ -3,7 +3,7 @@ import { Link, useHistory } from 'react-router-dom';
 import logoImg from '../../assets/logo.PNG';
 import { FiPower } from 'react-icons/fi';
 import { AiFillHome } from 'react-icons/ai';
-import { FiTrash } from 'react-icons/fi';
+import { FiTrash2 } from 'react-icons/fi';
 import './styles.css';
 import api from '../../services/api'
 
@@ -65,7 +65,7 @@ export default function Profile() {
     }, );
 
     useEffect(() => {
-        api.get(`/services`, {
+        api.get(`/services/paranoid`, {
             headers: {
                 'Authorization': `Bearer ` + token
                 }
@@ -220,7 +220,7 @@ export default function Profile() {
                                 <h3>{solicitation.description}</h3>
                                 <button style={{ marginRight: 50 }} onClick={() => handleToggle(solicitation.id)} type="button">Ver {solicitation.budgets.filter(budget => budget.status === 'enviado').length} Orçamentos</button>
                                 <button style={{ marginTop: 0 }} title="Cancelar" onClick={ () => { if (window.confirm('Você deseja cancelar o pedido ' + solicitation.id + ' ?')) handleCancelar(solicitation.id)} } type="button">
-                                    <FiTrash size={18} color="#E02041" />  
+                                    <FiTrash2 size={18} color="#E02041" />  
                                 </button>
                                 <p className="status">Status: {solicitation.status}</p>
                                 <p>{visible ?

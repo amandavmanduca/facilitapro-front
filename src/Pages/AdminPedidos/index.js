@@ -3,6 +3,8 @@ import { useHistory } from 'react-router-dom';
 import logoImg from '../../assets/logo.PNG';
 
 import { FiTrash2 } from 'react-icons/fi';
+
+
 //import { FiTrash22 } from 'react-icons/fi';
 import './styles.css';
 import api from '../../services/api'
@@ -53,7 +55,6 @@ export default function Profile() {
         api.get(`/solicitations`, {
             headers: {
                 'Authorization': `Bearer ` + token
-                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
@@ -65,7 +66,6 @@ export default function Profile() {
         api.get(`/budgets`, {
             headers: {
                 'Authorization': `Bearer ` + token
-                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
@@ -77,7 +77,6 @@ export default function Profile() {
         api.get(`/professionals`, {
             headers: {
                 'Authorization': `Bearer ` + token
-                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
@@ -97,7 +96,7 @@ export default function Profile() {
     }, );
 
     useEffect(() => {
-        api.get(`/services`, {
+        api.get(`/services/paranoid`, {
             headers: {
                 'Authorization': `Bearer ` + token
                 }
@@ -125,7 +124,6 @@ export default function Profile() {
         await api.put(`/solicitations/${idS}`, alteraStatusS, {
             headers: {
                 'Authorization': `Bearer ` + token
-                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             }
         );
@@ -145,7 +143,6 @@ export default function Profile() {
         await api.put(`/budgets/${idB}`, alteraStatusB, {
             headers: {
                 'Authorization': `Bearer ` + token
-                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             }
         );
@@ -153,6 +150,8 @@ export default function Profile() {
         alert('Orçamento Cancelado com Sucesso.')
                 
     }
+
+
 
 
 
@@ -188,7 +187,8 @@ export default function Profile() {
                         <h3 style={{ marginTop: 20 }}>Filtrar Pedidos por Status</h3>
                         <select value={statusBusca} onChange={e => setStatusBusca(e.target.value)}>
                             <option value="aberto">Aberto</option>
-                            <option value="fechado">Fechado</option>
+                            <option value="fechado">Em Andamento</option>
+                            <option value="finalizado">Finalizado</option>
                             <option value="expirado">Expirado</option>
                             <option value="cancelado">Cancelado</option>
                         </select>
@@ -224,7 +224,10 @@ export default function Profile() {
                                         </span>
                                     ))}
                                     </strong>
-                                    <img style={{maxWidth: 200}} src={solicitation.photoUrl} alt="Foto"/>
+                                    {solicitation.photoUrl !== null ? 
+                                        <img style={{maxWidth: 200}} src={solicitation.photoUrl} alt="Foto"/>
+                                    : null }
+                                    
                                     <strong>Cliente #{solicitation.client_id}</strong>
                                     <strong>
                                         {clients.filter(client => client.id === solicitation.client_id).map(client => (
@@ -244,9 +247,11 @@ export default function Profile() {
                                         <button style={{ marginRight: 50 }} onClick={() => handleToggle(solicitation.id)} >Ver {solicitation.budgets.length} Orçamentos</button>
                                         : <button style={{ marginRight: 50 }} type="button">Não possui Orçamentos</button> }
                                     
-                                    <button style={{ marginTop: 0 }} title="Cancelar" onClick={ () => { if (window.confirm('Você deseja cancelar o pedido ' + solicitation.id + ' ?')) handleCancelar(solicitation.id)} } type="button">
-                                        <FiTrash2 size={18} color="#E02041" />  
-                                    </button>
+                                    {(solicitation.status === 'aberto' || solicitation.status === 'fechado') ?
+                                        <button style={{ marginTop: 0 }} title="Cancelar" onClick={ () => { if (window.confirm('Você deseja cancelar o pedido ' + solicitation.id + ' ?')) handleCancelar(solicitation.id)} } type="button">
+                                            <FiTrash2 size={18} color="#E02041" />  
+                                        </button>
+                                    : null }
                                     <p className="status">Status: {solicitation.status}</p>
                                     <p>{visible ?
                                     <span>
@@ -276,10 +281,11 @@ export default function Profile() {
                                                 <p>Total R$ {budget.total}</p>
                                                 <p>Taxa FacilitaPRO R$ {budget.tax}</p>
 
-                                                
+                                                {(budget.status === 'enviado') ?
                                                 <button type="button" style={{ backgroundColor: "transparent", marginTop: 0 }} title="Cancelar" onClick={ () => { if (window.confirm('Você deseja cancelar o orçamento ' + budget.id + ' ?')) handleCancelarBudget(budget.id, budget.value, budget.tax)} } >
                                                     <FiTrash2 size={18} color="#E02041" />  
                                                 </button>
+                                                : null }
                                             </li>
                                     ))}</h3>
                                     </span>  : null }</p>

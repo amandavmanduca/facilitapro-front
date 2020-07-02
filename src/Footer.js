@@ -10,7 +10,7 @@ export default function Footer() {
     return (
         <div>
             <footer>
-                <img src={logoSenac} alt="Senac" style={{ width: 150, height: 80, marginTop: 0 }} />
+                <img src={logoSenac} alt="Senac" style={{ width: 150, height: 60, marginTop: 0 }} />
                 <img src={logoVertical} alt="FacilitaPRO" style={{ width: 130, height: 130 }}/>
                 <img src={logoCiemsul} alt="Ciemsul" style={{ width: 180, height: 130 }}/>
             </footer>

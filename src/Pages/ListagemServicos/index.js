@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import logoImg from '../../assets/logo.PNG';
 
 import { FiTrash2 } from 'react-icons/fi';
-//import { FiTrash22 } from 'react-icons/fi';
+import { FiEdit } from 'react-icons/fi';
 import './styles.css';
 import api from '../../services/api'
 
@@ -57,7 +57,6 @@ export default function Servicos() {
         api.get(`/solicitations`, {
             headers: {
                 'Authorization': `Bearer ` + token
-                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
@@ -69,7 +68,6 @@ export default function Servicos() {
         api.get(`/budgets`, {
             headers: {
                 'Authorization': `Bearer ` + token
-                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
@@ -81,7 +79,6 @@ export default function Servicos() {
         api.get(`/professionals`, {
             headers: {
                 'Authorization': `Bearer ` + token
-                //'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE1OTI0ODM5NTMsImV4cCI6MTU5MjU3MDM1M30.IcnsraME-ith9kXDWgaFh-soyGZE03CLERXPInx_TKM`
                 }
             })
             .then(response => {
@@ -101,7 +98,7 @@ export default function Servicos() {
     }, );
 
     useEffect(() => {
-        api.get(`/services`, {
+        api.get(`/services/paranoid`, {
             headers: {
                 'Authorization': `Bearer ` + token
                 }
@@ -136,28 +133,28 @@ export default function Servicos() {
 
     }
 
+    async function handleRestoreService(idS) {
+        try {
+            await api.get(`/services/restore/${idS}`)
+
+        } catch {
+            alert('Não foi possível restaurar o serviço.')
+        }
+    }
+
     
     async function handleExcluirServico(id) {
-        
-        if(solicitation.map(solicitation => solicitation.service_id === id)) {
-            alert('Há Pedidos cadastrados com esse serviço')
-        
-        } else {
+        try {
+            await api.delete(`/services/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ` + token
+                    }
+            });
 
-            try {
-                await api.delete(`/services/${id}`, {
-                    headers: {
-                        'Authorization': `Bearer ` + token
-                        }
-                });
-    
-                alert('Serviço Excluído com Sucesso.')
-            } catch {
-                alert('Erro ao Excluir Serviço.')
-            }
-
-        }
-        
+            alert('Serviço Excluído com Sucesso.')
+        } catch {
+            alert('Erro ao Excluir Serviço.')
+        }  
     }
 
     const pieDadosProfessional = [
@@ -241,9 +238,18 @@ export default function Servicos() {
                                         <span style={{height: 50}}>
                                             <strong>#{services.id} </strong>
                                             <strong>{services.name}   </strong>
+                                            {services.deletedAt != null ?
+                                            <span>
+                                                <br />
+                                                <p style={{fontWeight: "normal", color: "black"}}>[Serviço Deletado]</p>
+                                                <button style={{ border: "none", backgroundColor: "transparent" }} title="Restaurar Serviço" onClick={ () => { if (window.confirm('Você deseja restaurar o serviço ' + services.name + ' ?')) handleRestoreService(services.id)} }>
+                                                    <FiEdit size={18} />  
+                                                </button>
+                                            </span> : 
                                             <button style={{ border: "none", backgroundColor: "transparent" }} title="Deletar Serviço" onClick={ () => { if (window.confirm('Você deseja excluir o serviço ' + services.name + ' ?')) handleExcluirServico(services.id)} }>
                                                 <FiTrash2 size={18} />  
                                             </button>
+                                            }
                                             <p style={{fontWeight: "normal", color: "black"}}> [Pedidos: {solicitation.filter(solicitations => solicitations.service_id === services.id).length}]</p>
                                             <p style={{fontWeight: "normal", color: "black"}}> [Finalizados: {solicitation.filter(solicitations => solicitations.service_id === services.id)
                                                         .filter(solicitations => solicitations.status === 'finalizado').length}]</p>

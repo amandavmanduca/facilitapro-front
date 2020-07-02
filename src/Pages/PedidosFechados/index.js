@@ -116,6 +116,18 @@ export default function ProfileFinalizado() {
                 alert ('Por favor, tente novamente.')
     
             }
+
+            
+            // await api.put(`solicitations/${idS}`, {
+            //     body: {
+            //         rated: 1
+            //     }
+            // }, {
+            //     headers: {
+            //         'Authorization': `Bearer ` + token
+            //         }
+            //     }
+            // );
             
             history.push('/fechados')
 
@@ -176,7 +188,7 @@ export default function ProfileFinalizado() {
     }, );
 
     useEffect(() => {
-        api.get(`/services`, {
+        api.get(`/services/paranoid`, {
             headers: {
                 'Authorization': `Bearer ` + token
                 }
@@ -350,43 +362,48 @@ export default function ProfileFinalizado() {
                                 
                                 <p>{(visibleFin === true && solicitation.status === 'finalizado' && solicitation.id === filtraId) ?
                                     <span>
-                                        <li>
-                                            <p>Parabéns! Seu serviço foi finalizado com sucesso!</p>
-                                            <p>Pedimos que você avalie nosso profissional e a plataforma FacilitaPRO</p>
-                                            <p>Seu boleto está disponível no E-mail de cadastro</p>
-                                            <p> </p>
-                                            
-                                            <form onSubmit={handleAvaliar}>
+                                        {solicitation.rated === 0 ?
+                                            <li>
+                                                <p>Parabéns! Seu serviço foi finalizado com sucesso!</p>
+                                                <p>Pedimos que você avalie nosso profissional e a plataforma FacilitaPRO</p>
+                                                <p>Seu boleto está disponível no E-mail de cadastro</p>
+                                                <p> </p>
                                                 
-                                                <Box component="fieldset" mb={3} borderColor="transparent">
-                                                    <Typography component="legend">Avaliação do Profissional</Typography>
-                                                    <Rating
-                                                    name="customized-icons"
-                                                    defaultValue={null}
-                                                    value={notaProf}
-                                                    onChange={e => setNotaProf(e.target.value)}
-                                                    getLabelText={(value) => customIcons[value].label}
-                                                    IconContainerComponent={IconContainer}
+                                                <form onSubmit={handleAvaliar}>
                                                     
+                                                    <Box component="fieldset" mb={3} borderColor="transparent">
+                                                        <Typography component="legend">Avaliação do Profissional</Typography>
+                                                        <Rating
+                                                        name="customized-icons"
+                                                        defaultValue={null}
+                                                        value={notaProf}
+                                                        onChange={e => setNotaProf(e.target.value)}
+                                                        getLabelText={(value) => customIcons[value].label}
+                                                        IconContainerComponent={IconContainer}
+                                                        
+                                                        />
+                                                    </Box>
+                                                    <p>Avaliação do FacilitaPRO</p>
+                                                    <Rating size="large"
+                                                        name="hover-feedback"
+                                                        value={notaFP}
+                                                        precision={0.5}
+                                                        onChange={(event, newValue) => {
+                                                            setNotaFP(newValue);
+                                                        }}
+                                                        onChangeActive={(event, newHover) => {
+                                                            setHover(newHover);
+                                                        }}
                                                     />
-                                                </Box>
-                                                <p>Avaliação do FacilitaPRO</p>
-                                                <Rating size="large"
-                                                    name="hover-feedback"
-                                                    value={notaFP}
-                                                    precision={0.5}
-                                                    onChange={(event, newValue) => {
-                                                        setNotaFP(newValue);
-                                                    }}
-                                                    onChangeActive={(event, newHover) => {
-                                                        setHover(newHover);
-                                                    }}
-                                                />
-                                                {notaFP !== null && <Box ml={2}>{labels[hover !== -1 ? hover : notaFP]}</Box>}
-                                                
-                                                <button style={{ marginLeft: 30 }} type="submit">Enviar Avaliações</button>
-                                            </form>
-                                        </li>
+                                                    {notaFP !== null && <Box ml={2}>{labels[hover !== -1 ? hover : notaFP]}</Box>}
+                                                    
+                                                    <button style={{ marginLeft: 30 }} type="submit">Enviar Avaliações</button>
+                                                </form>
+                                            </li>
+                                        :
+                                        <li>
+                                            <p>Serviço Avaliado com Sucesso!</p>
+                                        </li>}
                                     </span> : null}</p>
                             </li>
                         ))}

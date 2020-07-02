@@ -131,7 +131,7 @@ export default function ProfileAndamento() {
     }, );
 
     useEffect(() => {
-        api.get(`/services`, {
+        api.get(`/services/paranoid`, {
             headers: {
                 'Authorization': `Bearer ` + token
                 }

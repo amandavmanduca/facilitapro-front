@@ -16,6 +16,7 @@
     "bootstrap": "^4.4.1",
     "create-react-nav": "^2.2.9",
     "firebase": "^7.13.1",
+    "moment": "^2.27.0",
     "navbar-react": "^1.0.4",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",

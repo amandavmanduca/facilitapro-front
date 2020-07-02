@@ -27,7 +27,7 @@ export default function DetalhesProf() {
             .then(response => {
                 setProfessionalsDet(response.data)  
         })
-    }, );
+    }, [token]);
 
     useEffect(() => {
         api.get(`/avg/professional/${professionalsDetId}`, {
@@ -91,14 +91,14 @@ export default function DetalhesProf() {
                     </ul>
 
 
-                    {(avg != null || avg !== undefined) ?
+                    {(average !== null) ?
 
-                    <span>
-                        <Box component="fieldset" mb={3} borderColor="transparent">
-                            <Typography component="legend">Avaliações</Typography>
-                            <Rating name="read-only" value={avg} readOnly />
-                        </Box>   
-                    </span> : <p>Esse profissional não possui avaliações</p>}
+                        <span>
+                            <Box component="fieldset" mb={3} borderColor="transparent">
+                                <Typography component="legend">Avaliações</Typography>
+                                <Rating name="read-only" value={avg} readOnly />
+                            </Box>   
+                        </span> : <p>Esse profissional ainda não possui avaliações</p>}
                       
                 </section>
             </div>

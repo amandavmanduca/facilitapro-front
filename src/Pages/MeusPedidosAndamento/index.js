@@ -5,17 +5,6 @@ import { FiPower } from 'react-icons/fi';
 import { AiFillHome } from 'react-icons/ai';
 import './styles.css';
 import api from '../../services/api'
-import Rating from '@material-ui/lab/Rating';
-import PropTypes from 'prop-types';
-import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
-import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
-import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied';
-import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAltOutlined';
-import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-
-
 
 
 
@@ -99,7 +88,7 @@ export default function ProfileAndamento() {
     }, );
 
     useEffect(() => {
-        api.get(`/services`, {
+        api.get(`/services/paranoid`, {
             headers: {
                 'Authorization': `Bearer ` + token
                 }
