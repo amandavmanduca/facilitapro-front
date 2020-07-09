@@ -3,12 +3,8 @@ import { Link, useHistory } from 'react-router-dom';
 import logoImg from '../../assets/logo.PNG';
 import { FiPower } from 'react-icons/fi';
 import { AiFillHome } from 'react-icons/ai';
-//import { FiTrash2 } from 'react-icons/fi';
 import './styles.css';
 import api from '../../services/api'
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-//import { faSpinner } from '@fortawesome/free-solid-svg-icons'
-//import { faCoffee } from '@fortawesome/free-solid-svg-icons'
 import Rating from '@material-ui/lab/Rating';
 import PropTypes from 'prop-types';
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
@@ -18,7 +14,8 @@ import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAltO
 import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import { grey } from '@material-ui/core/colors';
+import pagarme from 'pagarme'
+
 
 
 
@@ -48,16 +45,16 @@ export default function ProfileFinalizado() {
     localStorage.setItem('statusS', statusS);
     
 
-    const[statusB, setStatusB] = useState('');
+
 
     const[notaFP, setNotaFP] = useState();
+    const[teste, setTeste] = useState();
     const[notaProf, setNotaProf] = useState();
     const[hover, setHover] = React.useState(-1);
 
     const[filtraId, setFiltraId] = useState();
 
-    
-    const[value, setValue] = useState();
+
 
 
 
@@ -185,7 +182,7 @@ export default function ProfileFinalizado() {
             .then(response => {
                 setProfessional(response.data)
         })
-    }, );
+    }, [solicitation]);
 
     useEffect(() => {
         api.get(`/services/paranoid`, {
@@ -217,22 +214,6 @@ export default function ProfileFinalizado() {
 
         history.push('/detalhesprof')
     }
-
-
-    function handleData(data) {
-        const NewData = (data.substr(0,10).split('-'));
-        return NewData[2] + '/' + NewData[1] + '/' + NewData[0];
-    }
-
-
-
-
-
-
-
-
-
-
 
 
     const customIcons = {
@@ -281,8 +262,6 @@ export default function ProfileFinalizado() {
     //async function handleAvaliar(aP, aFP) {
 
 
-    console.log(value);
-    console.log(client_id);
 
     return (
         <div className="div profile-container">
@@ -305,9 +284,12 @@ export default function ProfileFinalizado() {
                 <Link className="buttonMenu" to="/expirados">Serviços Expirados</Link>
                 <Link className="buttonMenu" to="/cancelados">Serviços Cancelados</Link>
             </div>
-            
+
+
             <h1>Listagem de Pedidos</h1>
-            
+
+
+
             
 
             {(solicitation.filter(solicitation => solicitation.client_id === client_id).filter(solicitation => solicitation.status === "finalizado").length > 0) ?

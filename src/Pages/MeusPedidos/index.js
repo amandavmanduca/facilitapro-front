@@ -177,7 +177,7 @@ export default function Profile() {
                 <img src={logoImg} alt="FacilitaPRO" />
                 <span>Bem vindo, {Nome}</span>
                 <Link className="button" to="/pedido">Solicitar Novo Orçamento</Link>
-                <button title="Novo Endereço" onClick={handleHome} type="button">
+                <button title="Home" onClick={handleHome} type="button">
                     <AiFillHome size={28} color="#E02041" />  
                 </button>
                 <button onClick={handleLogout} type="button">

@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Login from './Pages/Login';
 import LoginAdmin from './Pages/LoginAdmin';
+import LoginProfissional from './Pages/LoginProfissional';
 import NovoPedido from './Pages/NovoPedido';
 import AdminPedidos from './Pages/AdminPedidos';
 import NovoCliente from './Pages/CadastroCli';
@@ -20,7 +21,11 @@ import Home from './Pages/Inicio';
 import DetalhesProf from './Pages/DetalhesProf';
 import { isAuthenticated } from './auth';
 import { adminIsAuthenticated } from './authAdmin';
+import { profIsAuthenticated } from './authProf';
 import CadastroEnderecos from './Pages/CadastroEnderecos';
+import ListagemPedidosProfissional from './Pages/ListagemPedidosProfissional';
+import ListagemAndamentoProfissional from './Pages/ListagemAndamentoProfissional';
+import ListagemFinalizadosProfissional from './Pages/ListagemFinalizadosProfissional';
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route
@@ -48,6 +53,19 @@ const PrivateRouteAdmin = ({ component: Component, ...rest }) => (
     />
 );
 
+const PrivateRouteProf = ({ component: Component, ...rest }) => (
+    <Route
+        {...rest}
+        render={props => 
+            profIsAuthenticated() ? (
+                <Component {...props} />
+            ) : (
+                <Redirect to={{ pathname: "/profissional", state: { from: props.location } }} />
+            )
+        }
+    />
+);
+
 
 export default function Routes() {
     return (
@@ -57,8 +75,12 @@ export default function Routes() {
             <Switch>
                 <Route path="/login" exact component={Login} />
                 <Route path="/adminlogin" exact component={LoginAdmin} />
+                <Route path="/profissional" exact component={LoginProfissional} />
                 <Route path="/" exact component={Home} />
                 <PrivateRoute path="/pedido" exact component={NovoPedido} />
+                <PrivateRouteProf path="/pedidosprofissional" exact component={ListagemPedidosProfissional} />
+                <PrivateRouteProf path="/andamentoprofissional" exact component={ListagemAndamentoProfissional} />
+                <PrivateRouteProf path="/fechadosprofissional" exact component={ListagemFinalizadosProfissional} />
                 <Route path="/register" exact component={NovoCliente} />
                 <PrivateRouteAdmin path="/cadastroprofissional" exact component={NovoProfissional} />
                 <PrivateRouteAdmin path="/cadastroservicos" exact component={NovaProfissao} />
