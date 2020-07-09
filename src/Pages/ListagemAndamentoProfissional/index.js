@@ -112,8 +112,7 @@ export default function Profile() {
     useEffect(() => {
         api.get(`/clients`, {
             headers: {
-                //'Authorization': `Bearer ` + token
-                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcGYiOiIzNjUwNCIsImlhdCI6MTU5NDI0MDc4NywiZXhwIjoxNTk0MzI3MTg3fQ.yF4H7HetaN8ZEzeRRgHwZ_fprg3wnOlIMgZE6RlwOeM`
+                'Authorization': `Bearer ` + token
                 }
             })
             .then(response => {
